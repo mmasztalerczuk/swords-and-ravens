@@ -70,4 +70,9 @@ export default class HouseCardAbility {
     overrideRetreatLocationChooser(_postCombat: PostCombatGameState, _house: House, _houseCard: HouseCard, _retreater: House): House | null {
         return null;
     }
+
+    finalCombatStrength(_combat: CombatGameState, _houseCard: HouseCard, _affectedHouseCard: HouseCard, strength: number) {
+        console.log(`basic ${strength}`);
+        return strength;
+    }
 }

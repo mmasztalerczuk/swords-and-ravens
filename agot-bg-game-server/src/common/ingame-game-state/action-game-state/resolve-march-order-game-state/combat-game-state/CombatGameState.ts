@@ -378,6 +378,14 @@ export default class CombatGameState extends GameState<
         );
     }
 
+    getFinalCombatStrength(house: House, strength: number): number {
+        return this.getStatOfHouseCard(
+            house,
+            hc => hc.towerIcons,
+            (h, hc, a, ahc) => a.finalCombatStrength(this, hc, ahc, strength)
+        );
+    }
+
     getStatOfHouseCard(
         affectedHouse: House,
         baseAmount: (hc: HouseCard) => number,
@@ -430,12 +438,12 @@ export default class CombatGameState extends GameState<
     }
 
     getTotalCombatStrength(house: House): number {
-        return this.getBaseCombatStrength(house)
+        return this.getFinalCombatStrength(house, this.getBaseCombatStrength(house)
             + this.getOrderBonus(house)
             + this.getSupportStrengthForSide(house)
             + this.getValyrianBladeBonus(house)
             + this.getHouseCardCombatStrength(house)
-            + this.getGarrisonCombatStrength(house);
+            + this.getGarrisonCombatStrength(house));
     }
 
     getEnemy(house: House): House {

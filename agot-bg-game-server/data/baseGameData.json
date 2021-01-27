@@ -510,6 +510,44 @@
           "combatStrength": 1,
           "swordIcons": 1
         },
+        "rayder": {
+          "name": "Mance Rayder",
+          "ability": "rayder"
+        }
+      },
+
+      "1houseCards": {
+        "stannis-baratheon": {
+          "name": "Stannis Baratheon",
+          "combatStrength": 4,
+          "ability": "stannis-baratheon"
+        },
+        "renly-baratheon": {
+          "name": "Renly Baratheon",
+          "combatStrength": 3,
+          "ability": "renly-baratheon"
+        },
+        "ser-davos-seaworth": {
+          "name": "Ser Davos Seaworth",
+          "combatStrength": 2,
+          "ability": "ser-davos-seaworth"
+        },
+        "brienne-of-tarth": {
+          "name": "Brienne of Tarth",
+          "combatStrength": 2,
+          "swordIcons": 1,
+          "towerIcons": 1
+        },
+        "salladhor-saan": {
+          "name": "Salladhor Saan",
+          "combatStrength": 1,
+          "ability": "salladhor-saan"
+        },
+        "melisandre": {
+          "name": "Melisandre",
+          "combatStrength": 1,
+          "swordIcons": 1
+        },
         "patchface": {
           "name": "Patchface",
           "ability": "patchface"
