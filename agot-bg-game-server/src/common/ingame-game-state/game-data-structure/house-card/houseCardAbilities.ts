@@ -27,6 +27,7 @@ import RobbStarkHouseCardAbility from "./RobbStarkHouseCardAbility";
 import RayderHouseCardAbility from "./RayderHouseCardAbility";
 import MelisandreHouseCardAbility from "./MelisandreHouseCardAbility";
 import JonSnowBaratheonHouseCardAbility from "./JonSnowBaratheonHouseCardAbility";
+import StannisBaratheonDwDHouseCardAbility from "./StannisBaratheonDwDHouseCardAbility";
 
 export const theonGreyjoy = new TheonGreyjoyHouseCardAbility(
     "theon-greyjoy",
@@ -159,6 +160,11 @@ export const jonSnow = new JonSnowBaratheonHouseCardAbility(
     "If you win this combat, you may choose the area to which your opponent's retreats."
     + " You must choose a legal area where your opponent loses the fewest units."
 );
+export const stannisBaratheonDwD = new StannisBaratheonDwDHouseCardAbility(
+    "stannis-baratheon-dwd",
+    "If you win this combat, you may choose the area to which your opponent's retreats."
+    + " You must choose a legal area where your opponent loses the fewest units."
+);
 const houseCardAbilities = new BetterMap<string, HouseCardAbility>([
     [theonGreyjoy.id, theonGreyjoy],
     [serDavosSeaworth.id, serDavosSeaworth],
@@ -187,6 +193,7 @@ const houseCardAbilities = new BetterMap<string, HouseCardAbility>([
     [rayder.id, rayder],
     [melisandre.id, melisandre],
     [jonSnow.id, jonSnow],
+    [stannisBaratheonDwD.id, stannisBaratheonDwD],
 ]);
 
 export default houseCardAbilities;

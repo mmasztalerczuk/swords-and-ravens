@@ -488,10 +488,10 @@
         "siege-engine": 2
       },
       "houseCards": {
-        "stannis-baratheon": {
+        "stannis-baratheon-dwd": {
           "name": "Stannis Baratheon",
           "combatStrength": 4,
-          "ability": "stannis-baratheon"
+          "ability": "stannis-baratheon-dwd"
         },
         "jon-snow": {
           "name": "Jon Snow",

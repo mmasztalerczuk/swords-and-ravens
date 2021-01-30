@@ -10,7 +10,6 @@ export default class JonSnowBaratheonHouseCardAbility extends HouseCardAbility {
 
     afterWinnerDetermination(afterWinnerDetermination: AfterWinnerDeterminationGameState, house: House, _houseCard: HouseCard): void {
         if (afterWinnerDetermination.postCombatGameState.winner == house) {
-            console.log("inside");
             afterWinnerDetermination.childGameState
                 .setChildGameState(new JonSnowBaratheonAbilityGameState(afterWinnerDetermination.childGameState))
                 .firstStart(house);

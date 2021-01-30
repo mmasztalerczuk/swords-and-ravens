@@ -63,7 +63,7 @@ export default class MelisandreAbilityGameState extends GameState<
         houseCard.state = HouseCardState.AVAILABLE;
         console.log("karta wyberana 2");
         console.log(house.powerTokens);
-        house.changePowerTokens(-houseCard.combatStrength);
+        house.powerTokens += -houseCard.combatStrength;
         console.log("po karcie");
         console.log(house.powerTokens);
         this.ingame.log({
