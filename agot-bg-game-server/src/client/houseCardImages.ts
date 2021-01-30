@@ -43,6 +43,7 @@ import tywinImage from "../../public/images/house-cards/Tywin.png";
 import victorianImage from "../../public/images/house-cards/Victorian.png";
 import rayderImage from "../../public/images/house-cards/Rayder.png";
 import melisandreDwDImage from "../../public/images/house-cards/Melisandre_DwD.png";
+import jonSnow from "../../public/images/house-cards/JonSnow.png";
 
 const houseCardImages = new BetterMap([
     ["queen-of-thorns", queenImage],
@@ -90,6 +91,7 @@ const houseCardImages = new BetterMap([
     ["victarion-greyjoy", victorianImage],
     ["rayder", rayderImage],
     ["melisandre-dwd", melisandreDwDImage],
+    ["jon-snow", jonSnow],    
 ]);
 
 export default houseCardImages;

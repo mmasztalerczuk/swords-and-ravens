@@ -484,10 +484,10 @@
           "combatStrength": 4,
           "ability": "stannis-baratheon"
         },
-        "renly-baratheon": {
-          "name": "Renly Baratheon",
+        "jon-snow": {
+          "name": "Jon Snow",
           "combatStrength": 3,
-          "ability": "renly-baratheon"
+          "ability": "jon-snow"
         },
         "melisandre-dwd": {
           "name": "Melisandre",

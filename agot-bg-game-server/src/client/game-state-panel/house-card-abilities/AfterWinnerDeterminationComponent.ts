@@ -10,6 +10,9 @@ import RenlyBaratheonAbilityComponent from "./RenlyBaratheonAbilityComponent";
 import CerseiLannisterAbilityGameState
     from "../../../common/ingame-game-state/action-game-state/resolve-march-order-game-state/combat-game-state/post-combat-game-state/after-winner-determination-game-state/cersei-lannister-ability-game-state/CerseiLannisterAbilityGameState";
 import CerseiLannisterAbilityComponent from "./CerseiLannisterAbilityComponent";
+import JonSnowBaratheonAbilityGameState
+    from "../../../common/ingame-game-state/action-game-state/resolve-march-order-game-state/combat-game-state/post-combat-game-state/after-winner-determination-game-state/jon-snow-baratheon-ability-game-state/JonSnowBaratheonAbilityGameState";
+import JonSnowBaratheonAbilityComponent from "./JonSnowBaratheonAbilityComponent";
 
 @observer
 export default class AfterWinnerDeterminationComponent extends Component<GameStateComponentProps<AfterWinnerDeterminationGameState>> {
@@ -17,6 +20,7 @@ export default class AfterWinnerDeterminationComponent extends Component<GameSta
         return renderChildGameState({...this.props, gameState: this.props.gameState.childGameState}, [
             [RenlyBaratheonAbilityGameState, RenlyBaratheonAbilityComponent],
             [CerseiLannisterAbilityGameState, CerseiLannisterAbilityComponent],
+            [JonSnowBaratheonAbilityGameState, JonSnowBaratheonAbilityComponent],            
         ]);
     }
 }

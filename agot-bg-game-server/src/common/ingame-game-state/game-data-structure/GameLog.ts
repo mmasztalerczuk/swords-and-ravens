@@ -28,7 +28,7 @@ export type GameLogData = TurnBegin | SupportDeclared | Attack | MarchResolved
     | SkinchangerScoutNightsWatchVictory | SkinchangerScoutWildlingVictory
     | RattleshirtsRaidersNightsWatchVictory | RattleshirtsRaidersWildlingVictory
     | GameOfThronesPowerTokensGained | ImmediatelyBattleCasualtiesSuffered | BattleCasualtiesSuffered
-    | SupplyAdjusted | MelisandreUsed;
+    | SupplyAdjusted | MelisandreUsed | JonSnowUsed;
 
 interface TurnBegin {
     type: "turn-begin";
@@ -251,6 +251,12 @@ interface MelisandreUsed {
     type: "melisandre-used";
     house: string;
     houseCard: string;
+}
+
+interface JonSnowUsed {
+    type: "jon-snow-used";
+    house: string;
+    wildlingsStrength: number;
 }
 
 interface DoranUsed {

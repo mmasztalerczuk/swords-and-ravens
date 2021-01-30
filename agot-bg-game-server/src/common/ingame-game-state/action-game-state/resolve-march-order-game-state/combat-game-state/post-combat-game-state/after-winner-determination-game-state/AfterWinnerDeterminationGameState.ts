@@ -10,12 +10,13 @@ import {ClientMessage} from "../../../../../../../messages/ClientMessage";
 import RenlyBaratheonAbilityGameState, { SerializedRenlyBaratheonAbilityGameState } from "./renly-baratheon-ability-game-state/RenlyBaratheonAbilityGameState";
 import PostCombatGameState from "../PostCombatGameState";
 import CerseiLannisterAbilityGameState, {SerializedCerseiLannisterAbilityGameState} from "./cersei-lannister-ability-game-state/CerseiLannisterAbilityGameState";
+import JonSnowBaratheonAbilityGameState, {SerializedJonSnowBaratheonAbilityGameState} from "./jon-snow-baratheon-ability-game-state/JonSnowBaratheonAbilityGameState";
 
 export default class AfterWinnerDeterminationGameState extends GameState<
     PostCombatGameState,
     HouseCardResolutionGameState<
         AfterWinnerDeterminationGameState,
-        RenlyBaratheonAbilityGameState | CerseiLannisterAbilityGameState
+        RenlyBaratheonAbilityGameState | CerseiLannisterAbilityGameState | JonSnowBaratheonAbilityGameState
     >>
 {
     get postCombatGameState(): PostCombatGameState {
@@ -82,6 +83,8 @@ export default class AfterWinnerDeterminationGameState extends GameState<
                 return RenlyBaratheonAbilityGameState.deserializeFromServer(houseCardResolution, data);
             case "cersei-lannister-ability":
                 return CerseiLannisterAbilityGameState.deserializeFromServer(houseCardResolution, data);
+            case "jon-snow-baratheon-ability":
+                return JonSnowBaratheonAbilityGameState.deserializeFromServer(houseCardResolution, data);                
         }
     }
 }
@@ -89,6 +92,6 @@ export default class AfterWinnerDeterminationGameState extends GameState<
 export interface SerializedAfterWinnerDeterminationGameState {
     type: "after-winner-determination";
     childGameState: SerializedHouseCardResolutionGameState<
-        SerializedRenlyBaratheonAbilityGameState | SerializedCerseiLannisterAbilityGameState
+        SerializedRenlyBaratheonAbilityGameState | SerializedCerseiLannisterAbilityGameState | SerializedJonSnowBaratheonAbilityGameState
     >;
 }

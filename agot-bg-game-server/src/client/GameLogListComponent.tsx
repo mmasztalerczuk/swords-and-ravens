@@ -485,8 +485,19 @@ export default class GameLogListComponent extends Component<GameLogListComponent
                 house = this.game.houses.get(data.house);
                 houseCard = this.game.getHouseCardById(data.houseCard);
                 return <>
-                    <strong>Patchface</strong>: <strong>{house.name}</strong> decided to discard <strong>
+                    <strong>Melisandre</strong>: <strong>{house.name}</strong> decided to discard <strong>
                         {houseCard.name}</strong> from house.
+                </>;
+
+            case "jon-snow-used":
+                house = this.game.houses.get(data.house);
+                let wilddlingStatus: string = "increase";
+                if (data.wildlingsStrength < 0) {
+                    wilddlingStatus = "decrease";
+                }
+                return <>
+                    <strong>Jon Snow</strong>: <strong>{house.name}</strong> decided to  <strong> 
+                        {wilddlingStatus} </strong> the Wildling track by one space.
                 </>;
 
             case "doran-used":
