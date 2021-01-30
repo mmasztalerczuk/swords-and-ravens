@@ -32,6 +32,9 @@ export default class ResolveConsolidatePowerGameState extends GameState<ActionGa
     }
 
     firstStart(): void {
+        this.ingame.log({
+            type: "action-phase-resolve-consolidate-power-began"
+        });
         this.proceedNextResolve(null);
     }
 
@@ -58,13 +61,7 @@ export default class ResolveConsolidatePowerGameState extends GameState<ActionGa
         const gains: number = this.getPotentialGainedPowerTokens(region, house);
 
         if(gains > 0) {
-            house.changePowerTokens(gains);
-
-            this.entireGame.broadcastToClients({
-                type: "change-power-token",
-                houseId: house.id,
-                powerTokenCount: house.powerTokens
-            });
+            this.ingame.changePowerTokens(house, gains);
         }
 
         this.ingame.log({

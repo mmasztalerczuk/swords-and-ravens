@@ -3,13 +3,13 @@ export default interface GameLog {
     data: GameLogData;
 }
 
-export type GameLogData = TurnBegin | SupportDeclared | Attack | MarchResolved
+export type GameLogData = TurnBegin | SupportDeclared | SupportRefused | Attack | MarchResolved
     | WesterosCardExecuted | WesterosCardDrawn | CombatResult | WildlingCardRevealed | WildlingBidding
     | HighestBidderChosen | LowestBidderChosen | PlayerMustered | WinnerDeclared
-    | RavenHolderWildlingCardPutBottom | RavenHolderWildlingCardPutTop | RavenHolderReplaceOrder | RaidDone | DarkWingsDarkWordsChoice
+    | RavenHolderWildlingCardPutBottom | RavenHolderWildlingCardPutTop | RavenHolderReplaceOrder | RavenNotUsed | RaidDone | DarkWingsDarkWordsChoice
     | PutToTheSwordChoice | AThroneOfBladesChoice | WinterIsComing | WesterosPhaseBegan
     | CombatHouseCardChosen | CombatValyrianSwordUsed | ClashOfKingsBiddingDone | ClashOfKingsFinalOrdering
-    | ActionPhaseBegan | PlanningPhaseBegan | WildlingStrengthTriggerWildlingsAttack | MarchOrderRemoved
+    | ActionPhaseBegan | ActionPhaseResolveRaidBegan | ActionPhaseResolveMarchBegan | ActionPhaseResolveConsolidatePowerBegan | PlanningPhaseBegan | WildlingStrengthTriggerWildlingsAttack | MarchOrderRemoved
     | ConsolidatePowerOrderResolved | ArmiesReconciled | EnemyPortTaken | ShipsDestroyedByEmptyCastle
     | HouseCardAbilityNotUsed | PatchfaceUsed | DoranUsed
     | TyrionLannisterHouseCardReplaced | TyrionLannisterChoiceMade
@@ -18,17 +18,34 @@ export type GameLogData = TurnBegin | SupportDeclared | Attack | MarchResolved
     | RenlyBaratheonNoFootmanAvailable | RenlyBaratheonNoKnightAvailable | RenlyBaratheonFootmanUpgradedToKnight
     | MaceTyrellNoFootmanAvailable | MaceTyrellCasualtiesPrevented | MaceTyrellFootmanKilled
     | CerseiLannisterNoOrderAvailable | CerseiLannisterOrderRemoved | RobbStarkRetreatRegionOverriden
-    | RetreatRegionChosen | RetreatCasualtiesSuffered | SilenceAtTheWallExecuted
+    | RetreatRegionChosen | RetreatCasualtiesSuffered | RetreatFailed | SilenceAtTheWallExecuted
     | PreemptiveRaidChoiceDone | PreemptiveRaidTrackReduced | PreemptiveRaidUnitsKilled | PreemptiveRaidWildlingsAttack
     | MassingOnTheMilkwaterHouseCardsBack | MassingOnTheMilkwaterWildlingVictory
     | MassingOnTheMilkwaterHouseCardsRemoved
     | AKingBeyondTheWallHighestTopTrack | AKingBeyondTheWallHouseReduceTrack | AKingBeyondTheWallLowestReduceTracks
     | MammothRidersDestroyUnits | MammothRidersReturnCard | TheHordeDescendsHighestMuster | TheHordeDescendsUnitsKilled
-    | CrowKillersFootmanUpgraded | CrowKillersKnightsReplaced
+    | CrowKillersFootmanUpgraded | CrowKillersKnightsReplaced | CrowKillersKnightsKilled
     | SkinchangerScoutNightsWatchVictory | SkinchangerScoutWildlingVictory
     | RattleshirtsRaidersNightsWatchVictory | RattleshirtsRaidersWildlingVictory
     | GameOfThronesPowerTokensGained | ImmediatelyBattleCasualtiesSuffered | BattleCasualtiesSuffered
-    | SupplyAdjusted | MelisandreUsed | JonSnowUsed;
+    | SupplyAdjusted | PlayerReplaced | UserHouseAssignments | PlayerAction | MelisandreUsed | JonSnowUsed;
+
+export enum PlayerActionType {
+    ORDERS_PLACED,
+    BID_MADE,
+    HOUSE_CARD_CHOSEN
+}
+
+interface PlayerAction {
+    type: "player-action";
+    house: string;
+    action: PlayerActionType;
+}
+
+interface UserHouseAssignments {
+    type: "user-house-assignments";
+    assignments: [string, string][];
+}
 
 interface TurnBegin {
     type: "turn-begin";
@@ -39,6 +56,11 @@ interface SupportDeclared {
     type: "support-declared";
     supporter: string;
     supported: string | null;
+}
+
+interface SupportRefused {
+    type: "support-refused";
+    house: string;
 }
 
 interface HouseCardChosen {
@@ -60,6 +82,7 @@ interface MarchResolved {
     house: string;
     startingRegion: string;
     moves: [string, string[]][];
+    leftPowerToken: boolean | null;
 }
 
 interface WesterosCardExecuted {
@@ -81,6 +104,7 @@ interface CombatResult {
         house: string;
         region: string;
         army: number;
+        armyUnits: string[];
         orderBonus: number;
         support: number;
         garrison: number;
@@ -142,6 +166,11 @@ interface RavenHolderReplaceOrder {
     newOrder: number;
 }
 
+interface RavenNotUsed {
+    type: "raven-not-used";
+    ravenHolder: string;
+}
+
 interface RaidDone {
     type: "raid-done";
     raider: string;
@@ -149,6 +178,8 @@ interface RaidDone {
     raiderRegion: string;
     raidedRegion: string | null;
     orderRaided: number | null;
+    raiderGainedPowerToken: boolean | null;
+    raidedHouseLostPowerToken: boolean | null;
 }
 
 interface DarkWingsDarkWordsChoice {
@@ -203,6 +234,18 @@ interface ClashOfKingsFinalOrdering {
 
 interface ActionPhaseBegan {
     type: "action-phase-began";
+}
+
+interface ActionPhaseResolveRaidBegan {
+    type: "action-phase-resolve-raid-began";
+}
+
+interface ActionPhaseResolveMarchBegan {
+    type: "action-phase-resolve-march-began";
+}
+
+interface ActionPhaseResolveConsolidatePowerBegan {
+    type: "action-phase-resolve-consolidate-power-began";
 }
 
 interface PlanningPhaseBegan {
@@ -374,7 +417,14 @@ interface RetreatRegionChosen {
     type: "retreat-region-chosen";
     house: string;
     regionFrom: string;
-    regionTo: string | null;
+    regionTo: string;
+}
+
+interface RetreatFailed {
+    type: "retreat-failed";
+    house: string;
+    isAttacker: boolean;
+    region: string;
 }
 
 interface RetreatCasualtiesSuffered {
@@ -491,6 +541,12 @@ interface CrowKillersKnightsReplaced {
     units: [string, string[]][];
 }
 
+interface CrowKillersKnightsKilled {
+    type: "crow-killers-knights-killed";
+    house: string;
+    units: [string, string[]][];
+}
+
 interface CrowKillersFootmanUpgraded {
     type: "crow-killers-footman-upgraded";
     house: string;
@@ -542,4 +598,11 @@ interface BattleCasualtiesSuffered {
 interface SupplyAdjusted {
     type: "supply-adjusted";
     supplies: [string, number][];
+}
+
+interface PlayerReplaced {
+    type: "player-replaced";
+    oldUser: string;
+    newUser: string;
+    house: string;
 }

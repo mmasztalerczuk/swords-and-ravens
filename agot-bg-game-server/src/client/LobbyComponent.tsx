@@ -19,6 +19,7 @@ import { OverlayTrigger } from "react-bootstrap";
 import Tooltip from "react-bootstrap/Tooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faTimes} from "@fortawesome/free-solid-svg-icons/faTimes";
+import UserLabel from "./UserLabel";
 
 interface LobbyComponentProps {
     gameClient: GameClient;
@@ -27,9 +28,17 @@ interface LobbyComponentProps {
 
 @observer
 export default class LobbyComponent extends Component<LobbyComponentProps> {
+    get authenticatedUser(): User {
+        return this.props.gameClient.authenticatedUser as User;
+    }
+
+    get randomHouses(): boolean {
+        return this.props.gameState.entireGame.gameSettings.randomHouses;
+    }
+
     render(): ReactNode {
-        const {success: canStartGame, reason: canStartGameReason} = this.props.gameState.canStartGame(this.props.gameClient.authenticatedUser as User);
-        const {success: canCancelGame, reason: canCancelGameReason} = this.props.gameState.canCancel(this.props.gameClient.authenticatedUser as User);
+        const {success: canStartGame, reason: canStartGameReason} = this.props.gameState.canStartGame(this.authenticatedUser);
+        const {success: canCancelGame, reason: canCancelGameReason} = this.props.gameState.canCancel(this.authenticatedUser);
 
         return (
             <Col xs={12} sm={10} md={8} lg={6} xl={3}>
@@ -37,22 +46,26 @@ export default class LobbyComponent extends Component<LobbyComponentProps> {
                     <Col>
                         <Card>
                             <ListGroup variant="flush">
-                                {this.props.gameState.lobbyHouses.values.map(h => (
+                                {this.props.gameState.lobbyHouses.values.map((h, i) => (
                                     <ListGroupItem key={h.id} style={{opacity: this.isHouseAvailable(h) ? 1 : 0.3}}>
                                         <Row className="align-items-center">
-                                            <Col xs="auto">
+                                            {!this.randomHouses && <Col xs="auto">
                                                 <div className="influence-icon"
                                                      style={{backgroundImage: `url(${houseInfluenceImages.get(h.id)})`}}>
                                                 </div>
-                                            </Col>
+                                            </Col>}
                                             <Col>
                                                 <div>
-                                                    <b>{h.name}</b>
+                                                    <b>{this.randomHouses ? "Seat " + (i + 1): h.name}</b>
                                                 </div>
                                                 <div className={classNames({"invisible": !this.props.gameState.players.has(h)})}>
-                                                    <i>
-                                                        {this.props.gameState.players.has(h) ? this.props.gameState.players.get(h).name : "XXX"}
-                                                    </i>
+                                                    {this.props.gameState.players.has(h) ? (
+                                                        <UserLabel
+                                                            gameClient={this.props.gameClient}
+                                                            gameState={this.props.gameState}
+                                                            user={this.props.gameState.players.get(h)}
+                                                        />
+                                                    ) : <div className="small">XXX</div>}
                                                 </div>
                                             </Col>
                                             {this.isHouseAvailable(h) && (
@@ -60,10 +73,16 @@ export default class LobbyComponent extends Component<LobbyComponentProps> {
                                                     <Col xs="auto">
                                                         <Button onClick={() => this.choose(h)}>Choose</Button>
                                                     </Col>
-                                                ) : this.props.gameState.players.get(h) == this.props.gameClient.authenticatedUser && (
+                                                ) : this.props.gameState.players.get(h) == this.authenticatedUser ? (
                                                     <Col xs="auto">
                                                         <Button variant="danger" onClick={() => this.leave()}>Leave</Button>
                                                     </Col>
+                                                ) : (
+                                                    this.props.gameState.entireGame.isOwner(this.authenticatedUser) && (
+                                                        <Col xs="auto">
+                                                            <Button variant="danger" onClick={() => this.kick(h)}>Kick</Button>
+                                                        </Col>
+                                                    )
                                                 )
                                             )}
                                         </Row>
@@ -166,6 +185,10 @@ export default class LobbyComponent extends Component<LobbyComponentProps> {
 
     choose(house: LobbyHouse): void {
         this.props.gameState.chooseHouse(house);
+    }
+
+    kick(house: LobbyHouse): void {
+        this.props.gameState.kick(this.props.gameState.players.get(house));
     }
 
     cancel(): void {

@@ -1,7 +1,5 @@
 # Swords and Ravens
 
-![beta](https://img.shields.io/badge/version-beta-blue)
-
 "Swords and Ravens" is a reimplementation of the board game published by Fantasy Flight Games "A Game of Thrones: Board Game - Second Edition".
 
 This repository also serves as a bug tracker. Head to [the issues section](../../issues) if you want to report a bug, see the progression on the different features, or to see what's planned for the game! Before creating an issue to report a bug or propose a feature, please make sure that an issue does not already exist by using the search functions.
@@ -26,7 +24,7 @@ There a multiple ways to run the code, depending on what components on what you 
 Requires `NodeJS` and `yarn`. Install the dependencies and initialize the environment variables by executing:
 
 ```bash
-cp agot-bg-game-server/
+cd agot-bg-game-server/
 yarn install
 yarn run generate-json-schemas
 cp .env.dev.local .env

@@ -32,10 +32,6 @@ export default class DeclareSupportGameState extends GameState<CombatGameState> 
         this.house = house;
     }
 
-    getPhaseName(): string {
-        return "Declare support";
-    }
-
     onPlayerMessage(player: Player, message: ClientMessage): void {
         if (message.type == "declare-support") {
             if (player.house != this.house) {
@@ -45,34 +41,10 @@ export default class DeclareSupportGameState extends GameState<CombatGameState> 
 
             const supportedHouse = message.supportedHouseId ? this.game.houses.get(message.supportedHouseId) : null;
 
-            if (supportedHouse != null) {
-                if (this.isRestrictedToHimself() && supportedHouse != this.house) {
-                    return;
-                } else if (!this.combatGameState.houseCombatDatas.keys.includes(supportedHouse)) {
-                    return;
-                }
-            }
-
-            this.combatGameState.supporters.set(this.house, supportedHouse);
-
-            this.ingameGameState.log({
-                type: "support-declared",
-                supporter: player.house.id,
-                supported: supportedHouse ? supportedHouse.id : null
-            });
-
-            this.entireGame.broadcastToClients({
-                type: "support-declared",
-                houseId: this.house.id,
-                supportedHouseId: supportedHouse ? supportedHouse.id : null
-            });
+            this.combatGameState.declareSupport(this.house, supportedHouse, true);
 
             this.combatGameState.onDeclareSupportGameStateEnd();
         }
-    }
-
-    isRestrictedToHimself(): boolean {
-        return this.combatGameState.houseCombatDatas.keys.includes(this.house);
     }
 
     onServerMessage(message: ServerMessage): void {

@@ -5,16 +5,21 @@ import {SerializedUser} from "../server/User";
 import {HouseCardState} from "../common/ingame-game-state/game-data-structure/house-card/HouseCard";
 import {GameLogData} from "../common/ingame-game-state/game-data-structure/GameLog";
 import {UserSettings} from "./ClientMessage";
+import { SerializedWesterosCard } from "../common/ingame-game-state/game-data-structure/westeros-card/WesterosCard";
+import { SerializedVote } from "../common/ingame-game-state/vote-system/Vote";
+import { CrowKillersStep } from "../common/ingame-game-state/westeros-game-state/wildlings-attack-game-state/crow-killers-wildling-victory-game-state/CrowKillersWildlingVictoryGameState";
 
-export type ServerMessage = NewUser | HouseChosen | AuthenticationResponse | OrderPlaced | PlayerReady
-    | HouseCardChosen | CombatImmediatelyKilledUnits | SupportDeclared | NewTurn | RemovePlacedOrder
+export type ServerMessage = NewUser | HouseChosen | AuthenticationResponse | OrderPlaced | PlayerReady | PlayerUnready
+    | HouseCardChosen | CombatImmediatelyKilledUnits | SupportDeclared | SupportRefused | NewTurn | RemovePlacedOrder
     | MoveUnits | CombatChangeArmy
     | UnitsWounded | ChangeCombatHouseCard | BeginSeeTopWildlingCard
-    | RavenOrderReplaced | ProceedWesterosCard | ChangeGarrison
-    | BidDone | GameStateChange | SupplyAdjusted
+    | RavenOrderReplaced | RevealTopWildlingCard | HideTopWildlingCard | ProceedWesterosCard | ChangeGarrison
+    | BiddingBegin | BidDone | BiddingNextTrack | GameStateChange | SupplyAdjusted
     | ChangeControlPowerToken | ChangePowerToken | ChangeWildlingStrength | AddGameLog | RevealWildlingCard
     | RemoveUnits | AddUnits | ChangeTracker | ActionPhaseChangeOrder | ChangeStateHouseCard
-    | SettingsChanged | ChangeValyrianSteelBladeUse | BiddingNextTrack | NewPrivateChatRoom | GameSettingsChanged;
+    | SettingsChanged | ChangeValyrianSteelBladeUse |  NewPrivateChatRoom | GameSettingsChanged
+    | UpdateWesterosDecks | UpdateConnectionStatus | VoteStarted | VoteCancelled | VoteDone | PlayerReplaced
+    | CrowKillersStepChanged;
 
 interface AuthenticationResponse {
     type: "authenticate-response";
@@ -54,15 +59,26 @@ interface PlayerReady {
     userId: string;
 }
 
+interface PlayerUnready {
+    type: "player-unready";
+    userId: string;
+}
+
 interface SupportDeclared {
     type: "support-declared";
     houseId: string;
     supportedHouseId: string | null;
 }
 
+interface SupportRefused {
+    type: "support-refused";
+    houseId: string;
+}
+
 interface HouseCardChosen {
     type: "house-card-chosen";
     houseId: string;
+    houseCardId: string | null;
 }
 
 interface ChangeCombatHouseCard {
@@ -114,14 +130,29 @@ interface RavenOrderReplaced {
     orderId: number;
 }
 
+interface RevealTopWildlingCard {
+    type: "reveal-top-wildling-card";
+    cardId: number;
+    houseId: string;
+}
+
+interface HideTopWildlingCard {
+    type: "hide-top-wildling-card";
+}
+
 interface ProceedWesterosCard {
     type: "proceed-westeros-card";
     currentCardI: number;
 }
 
+interface BiddingBegin {
+    type: "bidding-begin";
+}
+
 interface BidDone {
     type: "bid-done";
     houseId: string;
+    value: number;
 }
 
 interface GameStateChange {
@@ -222,4 +253,43 @@ interface NewPrivateChatRoom {
 interface GameSettingsChanged {
     type: "game-settings-changed";
     settings: any;
+}
+
+interface UpdateWesterosDecks {
+    type: "update-westeros-decks";
+    westerosDecks: SerializedWesterosCard[][];
+}
+
+interface UpdateConnectionStatus {
+    type: "update-connection-status";
+    user: string;
+    status: boolean;
+}
+
+interface VoteStarted {
+    type: "vote-started";
+    vote: SerializedVote;
+}
+
+interface VoteCancelled {
+    type: "vote-cancelled";
+    vote: string;
+}
+
+interface VoteDone {
+    type: "vote-done";
+    vote: string;
+    voter: string;
+    choice: boolean;
+}
+
+interface PlayerReplaced {
+    type: "player-replaced";
+    oldUser: string;
+    newUser: string;
+}
+
+interface CrowKillersStepChanged {
+    type: "crow-killers-step-changed";
+    newStep: CrowKillersStep;
 }

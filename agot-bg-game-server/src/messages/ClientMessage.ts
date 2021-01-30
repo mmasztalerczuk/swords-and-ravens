@@ -1,9 +1,9 @@
-export type ClientMessage = Ping | Authenticate | PlaceOrder | Ready | ResolveMarchOrder | DeclareSupport
-    | UseValyrianSteelBlade | ChooseHouseCard | ChooseCasualties | ChooseRavenAction
+export type ClientMessage = Ping | Authenticate | PlaceOrder | Ready | Unready | ResolveMarchOrder | DeclareSupport
+    | RefuseSupport | UseValyrianSteelBlade | ChooseHouseCard | ChooseCasualties | ChooseSeeTopWildlingCard | KickPlayer
     | ChooseTopWildlingCardAction | ReplaceOrder | SkipReplaceOrder | ResolveRaid | Bid | ChooseChoice
     | DecideBiggest | ReconcileArmies | Muster | ResolveTies | SelectUnits | LaunchGame | ChooseHouse
     | SelectOrders | SelectHouseCard | SelectRegion | ChangeSettings | CreatePrivateChatRoom | ChangeGameSettings
-    | CancelGame;
+    | CancelGame | Vote | LaunchCancelGameVote | CancelVote | LaunchReplacePlayerVote | UpdateNote;
 
 interface Ping {
     type: "ping";
@@ -37,6 +37,10 @@ interface Ready {
     type: "ready";
 }
 
+interface Unready {
+    type: "unready";
+}
+
 interface LaunchGame {
     type: "launch-game";
 }
@@ -51,6 +55,10 @@ interface ResolveMarchOrder {
 interface DeclareSupport {
     type: "declare-support";
     supportedHouseId: string | null;
+}
+
+interface RefuseSupport {
+    type: "refuse-support";
 }
 
 interface UseValyrianSteelBlade {
@@ -68,15 +76,8 @@ interface ChooseCasualties {
     chosenCasualties: number[];
 }
 
-interface ChooseRavenAction {
-    type: "choose-raven-action";
-    action: RavenAction;
-}
-
-export enum RavenAction {
-    REPLACE_ORDER,
-    SEE_TOP_WILDLING_CARD,
-    NONE
+interface ChooseSeeTopWildlingCard {
+    type: "choose-see-top-wildling-card";
 }
 
 interface ChooseTopWildlingCardAction {
@@ -167,6 +168,8 @@ interface ChangeSettings {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface UserSettings {
+    mapScrollbar: boolean;
+    lastOpenedTab: string | null;
 }
 
 interface ChangeGameSettings {
@@ -177,4 +180,34 @@ interface ChangeGameSettings {
 interface CreatePrivateChatRoom {
     type: "create-private-chat-room";
     otherUser: string;
+}
+
+interface KickPlayer {
+    type: "kick-player";
+    user: string;
+}
+
+interface Vote {
+    type: "vote";
+    vote: string;
+    choice: boolean;
+}
+
+interface LaunchCancelGameVote {
+    type: "launch-cancel-game-vote";
+}
+
+interface CancelVote {
+    type: "cancel-vote";
+    vote: string;
+}
+
+interface LaunchReplacePlayerVote {
+    type: "launch-replace-player-vote";
+    player: string;
+}
+
+interface UpdateNote {
+    type: "update-note";
+    note: string;
 }

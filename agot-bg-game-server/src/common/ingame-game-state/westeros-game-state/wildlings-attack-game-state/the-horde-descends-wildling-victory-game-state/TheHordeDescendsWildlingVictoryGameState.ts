@@ -28,17 +28,23 @@ export default class TheHordeDescendsWildlingVictoryGameState extends WildlingCa
 
     executeForLowestBidder(house: House): void {
         const strongholdUnits = _.flatMap(
-            this.game.getUnitsOfHouse(house).filter(([region, _]) => region.hasStructure).map(([_, units]) => units)
+            this.game.getUnitsOfHouse(house).filter(([region, _]) => region.hasStructure && region.units.size >=2).map(([_, units]) => units)
         );
 
         if (strongholdUnits.length >= 2) {
-            this.setChildGameState(new SelectUnitsGameState(this)).firstStart(house, strongholdUnits, 2);
+            this.setChildGameState(new SelectUnitsGameState(this)).firstStart(house, strongholdUnits, 2, false, true);
         } else {
             const units = this.game.world.getUnitsOfHouse(house);
 
             const count = Math.min(2, units.length);
 
             if (count == 0) {
+                this.ingame.log({
+                    type: "the-horde-descends-units-killed",
+                    house: house.id,
+                    units: []
+                });
+
                 this.proceedNextHouse(house);
                 return;
             }
@@ -51,6 +57,12 @@ export default class TheHordeDescendsWildlingVictoryGameState extends WildlingCa
         const units = this.game.world.getUnitsOfHouse(house);
 
         if (units.length == 0) {
+            this.ingame.log({
+                type: "the-horde-descends-units-killed",
+                house: house.id,
+                units: []
+            });
+
             this.proceedNextHouse(house);
             return;
         }

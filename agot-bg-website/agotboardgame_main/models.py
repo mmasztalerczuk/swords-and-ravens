@@ -39,6 +39,11 @@ class User(AbstractUser):
     game_token = models.TextField(default=generate_game_token)
     last_username_update_time = models.DateTimeField(default=None, null=True, blank=True)
     last_activity = models.DateTimeField(auto_now_add=True, blank=True)
+    email_notification_active = models.BooleanField(default=True)
+    vanilla_forum_user_id = models.IntegerField(default=0)
+
+    def is_in_group(self, group_name):
+        return self.groups.filter(name=group_name).exists()
 
     def can_update_username(self):
         return self.last_username_update_time is None
@@ -49,6 +54,12 @@ def create_user_profile(sender, instance, created, **kwargs):
     if settings.DEFAULT_GROUP and created:
         group = Group.objects.get(name=settings.DEFAULT_GROUP)
         group.user_set.add(instance)
+
+
+@receiver(post_save, sender=get_user_model())
+def create_account_vanilla_forum(sender, instance, created, **kwargs):
+    if settings.VANILLA_FORUM_API_KEY and created:
+        pass
 
 
 def generate_default_view_of_game():

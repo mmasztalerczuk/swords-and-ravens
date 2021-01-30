@@ -19,7 +19,8 @@ import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
 env = environ.Env(
-    DEBUG=(bool, False)
+    DEBUG=(bool, False),
+    VANILLA_IGNORED_USERS_WHEN_MIGRATING=(list, [])
 )
 environ.Env.read_env(".env")
 
@@ -49,11 +50,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'bootstrap4',
     'social_django',
     'django_prometheus',
     'channels',
     'chat',
+    'debug_toolbar'
 ]
 
 MIDDLEWARE = [
@@ -64,6 +67,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_prometheus.middleware.PrometheusAfterMiddleware',
@@ -223,4 +227,28 @@ CHANNEL_LAYERS = {
             ],
         },
     },
+}
+
+# Group badges in user profile
+
+GROUP_COLORS = {
+    "Admin": "danger",
+    "High Member": "info"
+}
+
+# Vanilla Forum
+
+VANILLA_FORUM_API_KEY = env('VANILLA_FORUM_API_KEY', default=None)
+VANILLA_FORUM_DEFAULT_ROLE_ID = env('VANILLA_FORUM_DEFAULT_ROLE_ID', default=0)
+VANILLA_FORUM_HOST = env('VANILLA_FORUM_HOST', default=None)
+VANILLA_IGNORED_USERS_WHEN_MIGRATING = env('VANILLA_IGNORED_USERS_WHEN_MIGRATING')
+
+
+# Debug Toolbar
+def show_toolbar(request):
+    return request.user.is_superuser
+
+
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TOOLBAR_CALLBACK': show_toolbar
 }

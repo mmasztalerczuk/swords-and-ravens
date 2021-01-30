@@ -28,6 +28,7 @@ import Order from "../../../game-data-structure/Order";
 import orders from "../../../game-data-structure/orders";
 import CancelHouseCardAbilitiesGameState
     , {SerializedCancelHouseCardAbilitiesGameState} from "./cancel-house-card-abilities-game-state/CancelHouseCardAbilitiesGameState";
+import { observable } from "mobx";
 
 
 export interface HouseCombatData {
@@ -54,7 +55,7 @@ export default class CombatGameState extends GameState<
     // The key is the supporting house and the value is the supported house.
     // The value is always either attacker or defender or null if the supporter
     // decided to support no-one.
-    supporters = new BetterMap<House, House | null>();
+    @observable supporters = new BetterMap<House, House | null>();
 
     get attackingRegion(): Region {
         return this.attackingHouseCombatData.region;
@@ -125,10 +126,52 @@ export default class CombatGameState extends GameState<
             [defender, {region: combatRegion, army: combatRegion.units.values, houseCard: null}]
         ]);
 
+        // Automatically declare attackers and defenders support
+        const possibleSupporters = this.getPossibleSupportingHouses();
+        if (possibleSupporters.includes(attacker)) {
+            this.declareSupport(attacker, attacker, false);
+        }
+
+        if (possibleSupporters.includes(defender)) {
+            this.declareSupport(defender, defender, false);
+        }
+
         // Begin by the declaration of support
         if (!this.proceedNextSupportDeclaration()) {
             this.proceedToChooseGeneral();
         }
+    }
+
+    declareSupport(supportingHouse: House, supportedHouse: House | null, writeToGameLog: boolean): void {
+        if (supportedHouse != null) {
+            if (this.isRestrictedToHimself(supportingHouse) && supportedHouse != supportingHouse) {
+                return;
+            } else if (!this.houseCombatDatas.keys.includes(supportedHouse)) {
+                return;
+            }
+        }
+
+        this.supporters.set(supportingHouse, supportedHouse);
+
+        if (writeToGameLog) {
+            this.ingameGameState.log({
+                type: "support-declared",
+                supporter: supportingHouse.id,
+                supported: supportedHouse ? supportedHouse.id : null
+            });
+        }
+
+        this.entireGame.broadcastToClients({
+            type: "support-declared",
+            houseId: supportingHouse.id,
+            supportedHouseId: supportedHouse ? supportedHouse.id : null
+        });
+    }
+
+    isRestrictedToHimself(house: House): boolean {
+        // With automatically declaring support this is not really needed anymore.
+        // But it is never bad to double check things so lets keep it.
+        return this.houseCombatDatas.keys.includes(house);
     }
 
     onDeclareSupportGameStateEnd(): void {
@@ -189,7 +232,7 @@ export default class CombatGameState extends GameState<
             if (order.type instanceof DefenseOrderType) {
                 return this.computeModifiedStat(
                     order.type.defenseModifier,
-                    (h, hc, hca, cv) => hca.modifyDefenseOrderBonus(this, h, hc, order.type as DefenseOrderType, cv)
+                    (h, hc, hca, cv) => hca.modifyDefenseOrderBonus(this, h, hc, house, order.type as DefenseOrderType, cv)
                 );
             }
         }
@@ -221,6 +264,15 @@ export default class CombatGameState extends GameState<
                     .reduce(_.add, 0);
             })
             .reduce(_.add, 0);
+    }
+
+    isHouseSupported(house: House): boolean {
+        const supportsForHouse = this.supporters.entries.filter(([_supporter, supportedHouse]) => supportedHouse == house);
+
+        // Check if the initial support order of the supporter is still present, it may have been removed by e.g. Queen of Thorns
+        return supportsForHouse.some(([supporter, _supportedHouse]) => {
+            return this.getPossibleSupportingRegions().some(({region}) => region.getController() == supporter);
+        });
     }
 
     getValyrianBladeBonus(house: House): number {

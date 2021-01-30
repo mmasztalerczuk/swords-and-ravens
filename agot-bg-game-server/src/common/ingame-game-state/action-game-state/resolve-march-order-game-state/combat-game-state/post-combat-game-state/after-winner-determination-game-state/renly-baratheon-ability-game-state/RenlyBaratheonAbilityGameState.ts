@@ -39,14 +39,14 @@ export default class RenlyBaratheonAbilityGameState extends GameState<
                 house: house.id
             });
 
-            this.parentGameState.parentGameState.onHouseCardResolutionFinish();
+            this.parentGameState.onHouseCardResolutionFinish(house);
         } else if (upgradableFootmen.length == 0) {
             this.ingame.log({
                 type: "renly-baratheon-no-footman-available",
                 house: house.id
             });
 
-            this.parentGameState.parentGameState.onHouseCardResolutionFinish();
+            this.parentGameState.onHouseCardResolutionFinish(house);
         } else {
             this.setChildGameState(new SelectUnitsGameState(this))
                 .firstStart(house, upgradableFootmen, 1, true);
@@ -54,21 +54,12 @@ export default class RenlyBaratheonAbilityGameState extends GameState<
     }
 
     getUpgradableFootmen(house: House): Unit[] {
-        // First, get all possible regions where footmen could be upgraded, which means
-        // the region where the house's army is, and regions where house was
-        // supporting the combat.
+        // Assemble a list of all units belonging to the house (supporting or not), and then take the footmen among them
+        const upgradableFootmen = this.combatGameState.houseCombatDatas.get(house).army
+            .concat(_.flatMap(this.combatGameState.getPossibleSupportingRegions().map(({region}) => region).filter(region => region.getController() == house).map(r => r.units.values)))
+            .filter(u => u.type == footman);
 
-        // If house is not a supporter, or didn't support himself in the combat,
-        // don't take into account the supporting regions.
-        const supportingRegions = this.combatGameState.supporters.has(house) && this.combatGameState.supporters.get(house)
-            ? this.combatGameState.getPossibleSupportingRegions()
-                .map(({region}) => region)
-                .filter(region => region.getController() == house)
-            : [];
-
-        const regions = [this.combatGameState.houseCombatDatas.get(house).region].concat(supportingRegions);
-
-        return _.flatMap(regions, region => region.units.values.filter(u => u.type == footman));
+        return upgradableFootmen;
     }
 
     onSelectUnitsEnd(house: House, selectedUnit: [Region, Unit[]][]): void {
@@ -87,48 +78,30 @@ export default class RenlyBaratheonAbilityGameState extends GameState<
         const houseCombatData = this.combatGameState.houseCombatDatas.get(house);
 
         selectedUnit.forEach(([region, footmenToRemove]) => {
-            footmenToRemove.forEach(u => {
-                region.units.delete(u.id);
+            // Replace them by knight
+            const knightsToAdd = this.ingame.transformUnits(region, footmenToRemove, knight);
 
-                if (houseCombatData.region == region) {
-                    // In case the footman was party of the army, 
-                    // remove it from the army.
-                    houseCombatData.army = _.without(houseCombatData.army, ...footmenToRemove);
-
-                    this.entireGame.broadcastToClients({
-                        type: "combat-change-army",
-                        house: house.id,
-                        region: region.id,
-                        army: this.combatGameState.houseCombatDatas.get(house).army.map(u => u.id)
-                    });
-                }
-            });
-
-            this.entireGame.broadcastToClients({
-                type: "remove-units",
-                regionId: region.id,
-                unitIds: footmenToRemove.map(k => k.id)
-            });
-
-            // Replace them by footman
-            const knightsToAdd = footmenToRemove.map(_ => this.game.createUnit(region, knight, house));
             if (houseCombatData.region == region) {
+                // In case the footman was party of the army,
+                // remove it from the army.
+                houseCombatData.army = _.without(houseCombatData.army, ...footmenToRemove);
+
                 // If the new knight is part of the attacking army,
                 // it will now be part of the army
                 houseCombatData.army.push(...knightsToAdd);
-            }
 
-            knightsToAdd.forEach(u => region.units.set(u.id, u));
+                this.entireGame.broadcastToClients({
+                    type: "combat-change-army",
+                    house: house.id,
+                    region: region.id,
+                    army: houseCombatData.army.map(u => u.id)
+                });
+            }
 
             this.ingame.log({
                 type: "renly-baratheon-footman-upgraded-to-knight",
                 house: house.id,
                 region: region.id
-            });
-
-            this.entireGame.broadcastToClients({
-                type: "add-units",
-                units: [[region.id, knightsToAdd.map(u => u.serializeToClient())]]
             });
         });
 

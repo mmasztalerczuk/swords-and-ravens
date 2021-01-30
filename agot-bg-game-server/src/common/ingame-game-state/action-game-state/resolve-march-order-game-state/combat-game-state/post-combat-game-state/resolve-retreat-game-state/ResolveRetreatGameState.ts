@@ -106,16 +106,16 @@ export default class ResolveRetreatGameState extends GameState<
         });
 
         this.ingame.log({
-            type: "retreat-region-chosen",
-            house: affectedHouse.name,
-            regionFrom: region.name,
-            regionTo: null
+            type: "retreat-failed",
+            house: affectedHouse.id,
+            isAttacker: affectedHouse == this.combat.attacker,
+            region: region.id
         });
 
         this.ingame.log({
             type: "retreat-casualties-suffered",
-            house: affectedHouse.name,
-            units: region.units.values.map(u => u.type.name)
+            house: affectedHouse.id,
+            units: unitsToKill.map(u => u.type.id)
         });
     }
 
@@ -126,10 +126,10 @@ export default class ResolveRetreatGameState extends GameState<
 
         this.ingame.log({
             type: "retreat-region-chosen",
-            house: this.postCombat.loser.name,
-            regionFrom: this.combat.defendingRegion.name,
-            regionTo: retreatRegion.name
-        })
+            house: this.postCombat.loser.id,
+            regionFrom: this.combat.defendingRegion.id,
+            regionTo: retreatRegion.id
+        });
 
         // Check if this retreat region require casualties
         const casualtiesCount = this.getCasualtiesOfRetreatRegion(retreatRegion);
@@ -170,8 +170,8 @@ export default class ResolveRetreatGameState extends GameState<
 
             this.ingame.log({
                 type: "retreat-casualties-suffered",
-                house: this.postCombat.loser.name,
-                units: units.map(u => u.type.name)
+                house: this.postCombat.loser.id,
+                units: units.map(u => u.type.id)
             });
         });
 
@@ -262,6 +262,11 @@ export default class ResolveRetreatGameState extends GameState<
                 }
             }
         }
+
+        if (possibleRetreatRegions.length == 0) {
+            return [];
+        }
+
         // No need for else path here.
         // If defender lost the battle he or the final chooser
         // has to choose a retreat region from possible retreat regions
@@ -271,7 +276,12 @@ export default class ResolveRetreatGameState extends GameState<
             possibleRetreatRegions.map(r => [r, this.getCasualtiesOfRetreatRegion(r)] as [Region, number]);
 
         // Get lowest casualty value
-        const lowestCasualty = _.min(_.flatMap(casualtiesPerRegion.map(([_, c]) => c)));
+        const lowestCasualty = _.min(casualtiesPerRegion.map(([_, c]) => c));
+
+        if (lowestCasualty == loserArmy.length) {
+            // If lowest casualty equals to the unit count of the whole army there is no valid retreat region
+            return [];
+        }
 
         // Filter regions for lowest casualty value
         return casualtiesPerRegion.filter(([_, c]) => c == lowestCasualty).map(([r, _]) => r);
@@ -281,11 +291,11 @@ export default class ResolveRetreatGameState extends GameState<
         // If retreatRegion is attackingRegion the attacker lost the battle
         // and retreats back from where he came from. In that case we don't need
         // to calculate casualties as retreating back to attackingRegion will always be
-        // supply compliant at that point (if it is blocked for retreat 
+        // supply compliant at that point (if it is blocked for retreat
         // has been checked earlier).
         // Furthermore we have to do this extra processing for the time being
         // because the attacking units are still present in attackingRegion
-        // and therefore hasTooMuchArmies with addedUnits overload will double 
+        // and therefore hasTooMuchArmies with addedUnits overload will double
         // the army size for the attackingRegion which could result
         // in an invalid supply violation.
         if (retreatRegion == this.postCombat.combat.attackingRegion) {

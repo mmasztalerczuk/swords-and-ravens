@@ -20,7 +20,7 @@ export default class EntireGame extends GameState<null, LobbyGameState | IngameG
     ownerUserId: string;
     name: string;
 
-    @observable gameSettings: GameSettings = {pbem: false, setupId: "base-game", playerCount: 6};
+    @observable gameSettings: GameSettings = { pbem: false, setupId: "base-game", playerCount: 6, randomHouses: false, cokWesterosPhase: false };
     onSendClientMessage: (message: ClientMessage) => void;
     onSendServerMessage: (users: User[], message: ServerMessage) => void;
     onWaitedUsers: (users: User[]) => void;
@@ -28,6 +28,12 @@ export default class EntireGame extends GameState<null, LobbyGameState | IngameG
     // Keys are the two users participating in the private chat.
     // A pair of user is sorted alphabetically by their id when used as a key.
     @observable privateChatRoomsIds: BetterMap<User, BetterMap<User, string>> = new BetterMap();
+    // Client-side callback fired whenever the current GameState changes.
+    onClientGameStateChange: (() => void) | null;
+
+    get owner(): User | null {
+        return this.users.tryGet(this.ownerUserId, null);
+    }
 
     constructor(id: string, ownerId: string, name: string) {
         super(null);
@@ -141,6 +147,10 @@ export default class EntireGame extends GameState<null, LobbyGameState | IngameG
             // Get the GameState for whose the childGameState must change
             const parentGameState = this.getGameStateNthLevelDown(level - 1);
             parentGameState.childGameState = parentGameState.deserializeChildGameState(serializedGameState);
+
+            if (this.onClientGameStateChange) {
+                this.onClientGameStateChange();
+            }
         } else if (message.type == "new-user") {
             const user = User.deserializeFromServer(this, message.user);
 
@@ -151,6 +161,9 @@ export default class EntireGame extends GameState<null, LobbyGameState | IngameG
             user.settings = message.settings;
         } else if (message.type == "game-settings-changed") {
             this.gameSettings = message.settings;
+        } else if (message.type == "update-connection-status") {
+            const user = this.users.get(message.user);
+            user.connected = message.status;
         } else {
             this.childGameState.onServerMessage(message);
         }
@@ -181,6 +194,8 @@ export default class EntireGame extends GameState<null, LobbyGameState | IngameG
             const ingame = this.childGameState;
             if (ingame.childGameState instanceof GameEndedGameState) {
                 return "FINISHED";
+            } else if (ingame.childGameState instanceof CancelledGameState) {
+                return "CANCELLED";
             }
             return "ONGOING";
         } else {
@@ -203,18 +218,36 @@ export default class EntireGame extends GameState<null, LobbyGameState | IngameG
         const players: {userId: string; data: object}[] = [];
         if (this.childGameState instanceof LobbyGameState) {
             this.childGameState.players.forEach((user, house) => {
+                // If the game is in "randomize house" mode, don't specify any houses in the PlayerInGame data
+                const playerData: {[key: string]: any} = {};
+
+                if (!this.gameSettings.randomHouses) {
+                    playerData["house"] = house.id;
+                }
+
                 players.push({
                     userId: user.id,
-                    data: {"house": house.id}
+                    data: playerData
                 });
             });
         } else if (this.childGameState instanceof IngameGameState) {
             const waitedForUsers = this.childGameState.getWaitedUsers();
 
             this.childGameState.players.forEach((player, user) => {
+                // "Important chat rooms" are chat rooms where unseen messages will display
+                // a badge next to the game in the website.
+                // In this case, it's all private rooms with this player in it. The next line
+                // fetches the list of private chat rooms, the website will take care of
+                // showing the badge or not, based on whether there are unseen messages.
+                const importantChatRooms = this.getPrivateChatRoomsOf(user);
+
                 players.push({
                     userId: user.id,
-                    data: {"house": player.house.id, "waited_for": waitedForUsers.includes(user)}
+                    data: {
+                        "house": player.house.id,
+                        "waited_for": waitedForUsers.includes(user),
+                        "important_chat_rooms": importantChatRooms.map(cr => cr.roomId)
+                    }
                 });
             });
         }
@@ -271,6 +304,8 @@ export default class EntireGame extends GameState<null, LobbyGameState | IngameG
     }
 
     serializeToClient(user: User | null): SerializedEntireGame {
+        const admin = user == null;
+
         return {
             id: this.id,
             name: this.name,
@@ -279,7 +314,7 @@ export default class EntireGame extends GameState<null, LobbyGameState | IngameG
             publicChatRoomId: this.publicChatRoomId,
             gameSettings: this.gameSettings,
             privateChatRoomIds: this.privateChatRoomsIds.map((u1, v) => [u1.id, v.map((u2, rid) => [u2.id, rid])]),
-            childGameState: this.childGameState.serializeToClient(user)
+            childGameState: this.childGameState.serializeToClient(admin, user)
         };
     }
 
@@ -327,4 +362,6 @@ export interface GameSettings {
     pbem: boolean;
     setupId: string;
     playerCount: number;
+    randomHouses: boolean;
+    cokWesterosPhase: boolean;
 }

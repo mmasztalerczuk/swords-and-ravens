@@ -7,6 +7,7 @@ import {observable} from "mobx";
 import BetterMap from "../../utils/BetterMap";
 import baseGameData from "../../../data/baseGameData.json";
 import CancelledGameState from "../cancelled-game-state/CancelledGameState";
+import shuffle from "../../utils/shuffle";
 
 export default class LobbyGameState extends GameState<EntireGame> {
     lobbyHouses: BetterMap<string, LobbyHouse>;
@@ -61,7 +62,24 @@ export default class LobbyGameState extends GameState<EntireGame> {
                 return;
             }
 
+            if (this.entireGame.gameSettings.randomHouses) {
+                const shuffled = shuffle(this.players.entries);
+
+                const lobbyHouses = this.players.keys;
+                for (let i = 0; i < shuffled.length; i++) {
+                    this.players.set(lobbyHouses[i], shuffled[i][1]);
+                }
+            }
+
             this.entireGame.proceedToIngameGameState(new BetterMap(this.players.map((h, u) => ([h.id, u]))));
+        } else if (message.type == "kick-player") {
+            const kickedUser = this.entireGame.users.get(message.user);
+
+            if (!this.entireGame.isOwner(user)) {
+                return;
+            }
+
+            this.setUserForLobbyHouse(null, kickedUser);
         } else if (message.type == "cancel-game") {
             if (!this.entireGame.isOwner(user)) {
                 return;
@@ -72,24 +90,29 @@ export default class LobbyGameState extends GameState<EntireGame> {
             const house = message.house ? this.lobbyHouses.get(message.house) : null;
 
             // Check if the house is available
-            if (house && this.players.has(house)) {
+            if (house && (this.players.has(house) || !this.getAvailableHouses().includes(house))) {
                 return;
             }
 
-            this.players.forEach((houseUser, house) => {
-                if (user == houseUser) {
-                    this.players.delete(house);
-                }
-            });
-            if (house) {
-                this.players.set(house, user);
-            }
-
-            this.entireGame.broadcastToClients({
-                type: "house-chosen",
-                players: this.players.entries.map(([house, user]) => [house.id, user.id])
-            });
+            this.setUserForLobbyHouse(house, user);
         }
+    }
+
+    setUserForLobbyHouse(house: LobbyHouse | null, user: User): void {
+        this.players.forEach((houseUser, house) => {
+            if (user == houseUser) {
+                this.players.delete(house);
+            }
+        });
+
+        if (house) {
+            this.players.set(house, user);
+        }
+
+        this.entireGame.broadcastToClients({
+            type: "house-chosen",
+            players: this.players.entries.map(([house, user]) => [house.id, user.id])
+        });
     }
 
     canStartGame(user: User): {success: boolean; reason: string} {
@@ -97,7 +120,7 @@ export default class LobbyGameState extends GameState<EntireGame> {
             return {success: false, reason: "not-owner"};
         }
 
-        if (this.players.size < this.getAvailableHouses().length) {
+        if (this.players.size < this.entireGame.getSelectedGameSetup().playerCount) {
             return {success: false, reason: "not-enough-players"};
         }
 
@@ -118,6 +141,11 @@ export default class LobbyGameState extends GameState<EntireGame> {
                 this.lobbyHouses.get(hid),
                 this.entireGame.users.get(uid)
             ]));
+
+            if (this.entireGame.onClientGameStateChange) {
+                // Fake a game state change to play a sound also in case lobby is full
+                this.entireGame.onClientGameStateChange();
+            }
         }
     }
 
@@ -140,15 +168,23 @@ export default class LobbyGameState extends GameState<EntireGame> {
         });
     }
 
+    kick(user: User): void {
+        this.entireGame.sendMessageToServer({
+            type: "kick-player",
+            user: user.id
+        });
+    }
+
     getWaitedUsers(): User[] {
-        return [];
+        const owner = this.entireGame.owner;
+        if (!owner || !this.canStartGame(owner).success) {
+            return [];
+        }
+
+        return [owner];
     }
 
-    getPhaseName(): string {
-        return "Lobby";
-    }
-
-    serializeToClient(_user: User | null): SerializedLobbyGameState {
+    serializeToClient(_admin: boolean, _user: User | null): SerializedLobbyGameState {
         return {
             type: "lobby",
             lobbyHouses: this.lobbyHouses.values,

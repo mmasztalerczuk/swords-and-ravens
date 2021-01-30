@@ -55,7 +55,7 @@ export default class HouseCardAbility {
         return 0;
     }
 
-    modifyDefenseOrderBonus(_combat: CombatGameState, _house: House, _houseCard: HouseCard, _defenseOrderType: DefenseOrderType, _currentBonus: number): number {
+    modifyDefenseOrderBonus(_combat: CombatGameState, _house: House, _houseCard: HouseCard, _houseSide: House, _defenseOrderType: DefenseOrderType, _currentBonus: number): number {
         return 0;
     }
 
@@ -74,5 +74,9 @@ export default class HouseCardAbility {
     finalCombatStrength(_combat: CombatGameState, _houseCard: HouseCard, _affectedHouseCard: HouseCard, strength: number) {
         console.log(`basic ${strength}`);
         return strength;
+    }
+
+    forcesValyrianSteelBladeDecision(_combat: CombatGameState, _valyrianSteelBladeHolder: House): boolean {
+        return false;
     }
 }

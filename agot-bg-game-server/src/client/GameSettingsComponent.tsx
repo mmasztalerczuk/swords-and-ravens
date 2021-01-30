@@ -8,6 +8,7 @@ import EntireGame from "../common/EntireGame";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import LobbyGameState from "../common/lobby-game-state/LobbyGameState";
+import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
 interface GameSettingsComponentProps {
     gameClient: GameClient;
@@ -37,6 +38,7 @@ export default class GameSettingsComponent extends Component<GameSettingsCompone
                             <Col xs="auto">
                                 <select id="setups" name="setups"
                                     value={this.gameSettings.setupId}
+                                    disabled={!this.canChangeGameSettings}
                                     onChange={e => this.onSetupChange(e.target.value)}>
                                     {this.createSetupItems()}
                                 </select>
@@ -46,21 +48,73 @@ export default class GameSettingsComponent extends Component<GameSettingsCompone
                             <Col xs="auto">
                                 <select id="player-count" name="playerCount"
                                     value={this.gameSettings.playerCount}
+                                    disabled={!this.canChangeGameSettings}
                                     onChange={e => this.onPlayerCountChange(e.target.value)}>
                                     {this.createPlayerCountItems()}
                                 </select>
                             </Col>
+                            <Col xs="auto">
+                                <>Players</>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs="auto">
+                                <FormCheck
+                                    id="random-houses-setting"
+                                    type="checkbox"
+                                    label={
+                                        <OverlayTrigger overlay={
+                                            <Tooltip id="random-houses-tooltip">
+                                                Houses will be randomized before the game starts when this option is selected.
+                                            </Tooltip>}>
+                                            <label htmlFor="random-houses-setting">Randomize houses</label>
+                                        </OverlayTrigger>}
+                                    disabled={!this.canChangeGameSettings}
+                                    checked={this.gameSettings.randomHouses}
+                                    onChange={() => this.changeGameSettings(() => this.gameSettings.randomHouses = !this.gameSettings.randomHouses)}
+                                />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs="auto">
+                                <FormCheck
+                                    id="westeros-phase-variant-setting"
+                                    type="checkbox"
+                                    label={
+                                        <OverlayTrigger overlay={
+                                            <Tooltip id="westeros-phase-variant-tooltip">
+                                                Players may look at the next 3 Westeros cards from each deck at any time.
+                                            </Tooltip>}>
+                                            <label htmlFor="westeros-phase-variant-setting">CoK Westeros Phase Variant</label>
+                                        </OverlayTrigger>}
+                                    disabled={!this.canChangeGameSettings}
+                                    checked={this.gameSettings.cokWesterosPhase}
+                                    onChange={() => this.changeGameSettings(() => this.gameSettings.cokWesterosPhase = !this.gameSettings.cokWesterosPhase)}
+                                />
+                            </Col>
                         </Row>
                     </>
                 )}
-                <FormCheck
-                    id="pbem-setting"
-                    type="checkbox"
-                    label="PBEM"
-                    disabled={!this.canChangeGameSettings}
-                    checked={this.gameSettings.pbem}
-                    onChange={() => this.changeGameSettings(() => this.gameSettings.pbem = !this.gameSettings.pbem)}
-                />
+                <Row>
+                    <Col xs="auto">
+                        <FormCheck
+                            id="pbem-setting"
+                            type="checkbox"
+                            label={
+                                <OverlayTrigger overlay={
+                                    <Tooltip id="pbem-tooltip">
+                                        <b>P</b>lay <b>B</b>y <b>E</b>-<b>M</b>ail<br />
+                                        Players receive an e-mail when it is their turn.
+                                        Those games are typically played over days or weeks.
+                                    </Tooltip>}>
+                                    <label htmlFor="pbem-setting">PBEM</label>
+                                </OverlayTrigger>}
+                            disabled={!this.canChangeGameSettings}
+                            checked={this.gameSettings.pbem}
+                            onChange={() => this.changeGameSettings(() => this.gameSettings.pbem = !this.gameSettings.pbem)}
+                        />
+                    </Col>
+                </Row>
             </>
         );
     }

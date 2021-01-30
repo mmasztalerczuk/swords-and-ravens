@@ -11,11 +11,13 @@ import BetterMap from "../../../../../../utils/BetterMap";
 import IngameGameState from "../../../../IngameGameState";
 import _ from "lodash";
 import User from "../../../../../../server/User";
+import { PlayerActionType } from "../../../../../ingame-game-state/game-data-structure/GameLog";
 
 export default class ChooseHouseCardGameState extends GameState<CombatGameState> {
     // A null value for a value can be present client-side, it indicates
     // that a house card was chosen but it may not be shown to the player.
     @observable houseCards = new BetterMap<House, HouseCard | null>();
+    @observable selectedHouseCard: HouseCard | null;
 
     get combatGameState(): CombatGameState {
         return this.parentGameState;
@@ -40,8 +42,12 @@ export default class ChooseHouseCardGameState extends GameState<CombatGameState>
     onServerMessage(message: ServerMessage): void {
         if (message.type == "house-card-chosen") {
             const house = this.combatGameState.game.houses.get(message.houseId);
-
-            this.houseCards.set(house, null);
+            this.houseCards.set(house, message.houseCardId
+                ? this.combatGameState.game.getHouseCardById(message.houseCardId)
+                : null);
+        } else if(message.type == "support-refused") {
+            const house = this.combatGameState.game.houses.get(message.houseId);
+            this.removeSupportForHouse(house);
         }
     }
 
@@ -59,13 +65,54 @@ export default class ChooseHouseCardGameState extends GameState<CombatGameState>
 
             this.houseCards.set(player.house, houseCard);
 
-            this.entireGame.broadcastToClients({
+            const otherHouses = _.difference(this.parentGameState.game.houses.values, [player.house]);
+            this.entireGame.sendMessageToClients(otherHouses.map(h => this.combatGameState.ingameGameState.getControllerOfHouse(h).user), {
                 type: "house-card-chosen",
-                houseId: player.house.id
+                houseId: player.house.id,
+                houseCardId: null
+            });
+
+            this.entireGame.sendMessageToClients([player.user], {
+                type: "house-card-chosen",
+                houseId: player.house.id,
+                houseCardId: houseCard.id
+            });
+
+            this.ingameGameState.log({
+                type: "player-action",
+                house: player.house.id,
+                action: PlayerActionType.HOUSE_CARD_CHOSEN
             });
 
             this.checkAndProceedEndOfChooseHouseCardGameState();
+        } else if(message.type == "refuse-support") {
+            if (!this.canRefuseSupport(player.house)) {
+                return;
+            }
+
+            this.removeSupportForHouse(player.house);
+            this.combatGameState.ingameGameState.log({
+                type: "support-refused",
+                house: player.house.id
+            });
+
+            this.entireGame.broadcastToClients({
+                type: "support-refused",
+                houseId: player.house.id
+            });
+
+            // Reset comabatGameState.clientGameState to retrigger ChooseHouseCardGameState
+            this.combatGameState.proceedToChooseGeneral();
         }
+    }
+
+    private removeSupportForHouse(supportedHouse: House): void {
+        const supportingHouses = this.combatGameState.supporters.entries.filter(([_supporting, supported]) => supported == supportedHouse)
+            .map(([supportingHouse, _supported]) => supportingHouse);
+
+        supportingHouses.forEach(h => this.combatGameState.supporters.delete(h));
+
+        this.selectedHouseCard = null;
     }
 
     getWaitingForHouses(): House[] {
@@ -87,14 +134,17 @@ export default class ChooseHouseCardGameState extends GameState<CombatGameState>
         });
     }
 
-    getPhaseName(): string {
-        return "Choose a general";
-    }
-
-    serializeToClient(_admin: boolean, _player: Player | null): SerializedChooseHouseCardGameState {
+    serializeToClient(admin: boolean, player: Player | null): SerializedChooseHouseCardGameState {
         return {
             type: "choose-house-card",
-            houseCards: this.houseCards.map((h, hc) => [h.id, hc ? hc.id : null])
+            houseCards: this.houseCards.map((h, hc) => {
+                // If a player requested the serialized version, only give his own house card.
+                if ((admin || (player && h == player.house)) && hc) {
+                    return [h.id, hc.id];
+                } else {
+                    return [h.id, null];
+                }
+            })
         };
     }
 
@@ -127,10 +177,29 @@ export default class ChooseHouseCardGameState extends GameState<CombatGameState>
         }
     }
 
+    canRefuseSupport(house: House): boolean {
+        // Support can only be refused if house is supported and if it has not played a house card yet
+        return this.combatGameState.supporters.values.includes(house) && !this.houseCards.has(house);
+    }
+
+    refuseSupport(): void {
+        this.entireGame.sendMessageToServer({
+            type: "refuse-support"
+        });
+    }
+
     private tryAutomaticallyChooseLastHouseCard(house: House): void {
         const choosableCards = this.getChoosableCards(house);
-        if (choosableCards.length == 1) {
+
+        // We can only fast-track the last house card if house received no support to allow refusing it here
+        if (choosableCards.length == 1 &&
+            !this.combatGameState.supporters.values.includes(house)) {
             this.houseCards.set(house, choosableCards[0]);
+            this.ingameGameState.log({
+                type: "player-action",
+                house: house.id,
+                action: PlayerActionType.HOUSE_CARD_CHOSEN
+            });
         }
     }
 

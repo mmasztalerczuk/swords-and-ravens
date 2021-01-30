@@ -28,13 +28,15 @@ import CancelHouseCardAbilitiesComponent from "./house-card-abilities/CancelHous
 import Col from "react-bootstrap/Col";
 import CombatInfoComponent from "../CombatInfoComponent";
 import Region from "../../common/ingame-game-state/game-data-structure/Region";
-import { RegionOnMapProperties } from "../MapControls";
+import { RegionOnMapProperties, UnitOnMapProperties } from "../MapControls";
 import PartialRecursive from "../../utils/PartialRecursive";
 import _ from "lodash";
+import Unit from "../../common/ingame-game-state/game-data-structure/Unit";
 
 @observer
 export default class CombatComponent extends Component<GameStateComponentProps<CombatGameState>> {
     modifyRegionsOnMapCallback: any;
+    modifyUnitsOnMapCallback: any;
 
     get combatGameState(): CombatGameState {
         return this.props.gameState;
@@ -64,6 +66,7 @@ export default class CombatComponent extends Component<GameStateComponentProps<C
                                         houseCard: this.props.gameState.attackerHouseCard,
                                         region: this.props.gameState.attackingRegion,
                                         army: this.combatGameState.getBaseCombatStrength(this.attacker),
+                                        armyUnits: this.combatGameState.attackingArmy.map(u => u.type),
                                         orderBonus: this.combatGameState.getOrderBonus(this.attacker),
                                         garrison: this.combatGameState.getGarrisonCombatStrength(this.attacker),
                                         support: this.combatGameState.getSupportStrengthForSide(this.attacker),
@@ -76,6 +79,7 @@ export default class CombatComponent extends Component<GameStateComponentProps<C
                                         houseCard: this.props.gameState.defenderHouseCard,
                                         region: this.props.gameState.defendingRegion,
                                         army: this.combatGameState.getBaseCombatStrength(this.defender),
+                                        armyUnits: this.combatGameState.defendingArmy.map(u => u.type),
                                         orderBonus: this.combatGameState.getOrderBonus(this.defender),
                                         garrison: this.combatGameState.getGarrisonCombatStrength(this.defender),
                                         support: this.combatGameState.getSupportStrengthForSide(this.defender),
@@ -101,18 +105,37 @@ export default class CombatComponent extends Component<GameStateComponentProps<C
     }
 
     modifyRegionsOnMap(): [Region, PartialRecursive<RegionOnMapProperties>][] {
-        // Highlight the embattled are in yellow
+        // Highlight the embattled area in yellow
         return [[
             this.props.gameState.defendingRegion,
             {highlight: {active: true, color: "yellow"}}
         ]];
     }
 
+    modifyUnitsOnMap(): [Unit, PartialRecursive<UnitOnMapProperties>][] {
+        const authenticatedPlayer = this.props.gameClient.authenticatedPlayer;
+
+        // Highlight the attacking army in red
+        // We just hightlight the attacking army until PostCombatGameState for combatants
+        // as during PostCombat some effects will highlight units for selection
+        // for winner and loser (e.g. Retreat, Renly Baratheon, Ilyn Payn, ToB skull, etc.)
+        if (this.props.gameState.childGameState instanceof DeclareSupportGameState
+            || this.props.gameState.childGameState instanceof ChooseHouseCardGameState
+            || this.props.gameState.childGameState instanceof UseValyrianSteelBladeGameState
+            // But we can highlight the attacking army for non combatants during the whole combat phase
+            || (authenticatedPlayer == null || !this.props.gameState.houseCombatDatas.keys.includes(authenticatedPlayer.house))) {
+            return this.props.gameState.attackingArmy.map(u => ([u, {highlight: {active: false, color: "red"}}]));
+        }
+        return [];
+    }
+
     componentDidMount(): void {
         this.props.mapControls.modifyRegionsOnMap.push(this.modifyRegionsOnMapCallback = () => this.modifyRegionsOnMap());
+        this.props.mapControls.modifyUnitsOnMap.push(this.modifyUnitsOnMapCallback = () => this.modifyUnitsOnMap());
     }
 
     componentWillUnmount(): void {
         _.pull(this.props.mapControls.modifyRegionsOnMap, this.modifyRegionsOnMapCallback);
+        _.pull(this.props.mapControls.modifyUnitsOnMap, this.modifyUnitsOnMapCallback);
     }
 }

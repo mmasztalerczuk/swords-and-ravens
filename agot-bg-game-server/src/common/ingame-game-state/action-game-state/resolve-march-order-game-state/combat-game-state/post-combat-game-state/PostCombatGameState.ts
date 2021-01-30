@@ -75,6 +75,7 @@ export default class PostCombatGameState extends GameState<
                     house: h.id,
                     region: this.combat.houseCombatDatas.get(h).region.id,
                     army: this.combat.getBaseCombatStrength(h),
+                    armyUnits: this.combat.houseCombatDatas.get(h).army.map(u => u.type.id),
                     orderBonus: this.combat.getOrderBonus(h),
                     support: this.combat.getSupportStrengthForSide(h),
                     garrison: this.combat.getGarrisonCombatStrength(h),
@@ -86,29 +87,15 @@ export default class PostCombatGameState extends GameState<
             })
         });
 
-        // If there was a defeated garrison, remove it
-        if (this.loser == this.combat.defender && this.combat.defendingRegion.garrison > 0) {
-            this.combat.defendingRegion.garrison = 0;
-
-            this.entireGame.broadcastToClients({
-                type: "change-garrison",
-                region: this.combat.defendingRegion.id,
-                newGarrison: 0
-            });
-        }
-
-        // Put the house cards as used
-        this.combat.houseCombatDatas.forEach(({houseCard}, house) => this.markHouseAsUsed(house, houseCard));
-
-        this.setChildGameState(new AfterWinnerDeterminationGameState(this)).firstStart();
+        this.proceedCasualties();
     }
 
     onChooseCasualtiesGameStateEnd(region: Region, selectedCasualties: Unit[]): void {
         this.combat.ingameGameState.log(
             {
                 type: "killed-after-combat",
-                house: this.loser.name,
-                killed: selectedCasualties.map(u => u.type.name)
+                house: this.loser.id,
+                killed: selectedCasualties.map(u => u.type.id)
             }
         );
 
@@ -131,15 +118,20 @@ export default class PostCombatGameState extends GameState<
             unitIds: selectedCasualties.map(u => u.id)
         });
 
-        if (this.loser == this.defender) {
-            this.proceedRetreat();
-            return;
-        }
-
-        this.proceedEndOfCombat();
+        this.proceedHouseCardHandling();
     }
 
-    onAfterWinnerDeterminationFinish(): void {
+    proceedCasualties(): void {
+        // If there was a defeated garrison, remove it
+        if (this.loser == this.combat.defender && this.combat.defendingRegion.garrison > 0) {
+            this.combat.defendingRegion.garrison = 0;
+
+            this.entireGame.broadcastToClients({
+                type: "change-garrison",
+                region: this.combat.defendingRegion.id,
+                newGarrison: 0
+            });
+        }
 
         const locationLoserArmy = this.attacker == this.loser ? this.combat.attackingRegion : this.combat.defendingRegion;
         const loserArmy = this.attacker == this.loser ? this.combat.attackingArmy : this.combat.defendingArmy;
@@ -151,8 +143,6 @@ export default class PostCombatGameState extends GameState<
             ? this.combat.getHouseCardTowerIcons(this.attacker)
             : this.combat.getHouseCardTowerIcons(this.defender);
 
-        const loserCasualtiesCount = Math.max(0, winnerSwordIcons - loserTowerIcons);
-
         // All units of the loser army that can't retreat or are wounded are immediately killed
         const immediatelyKilledLoserUnits = loserArmy.filter(u => u.wounded || !u.type.canRetreat);
 
@@ -160,9 +150,9 @@ export default class PostCombatGameState extends GameState<
             this.combat.ingameGameState.log(
                 {
                     type: "immediatly-killed-after-combat",
-                    house: this.loser.name,
-                    killedBecauseWounded: immediatelyKilledLoserUnits.filter(u => u.wounded).map(u => u.type.name),
-                    killedBecauseCantRetreat: immediatelyKilledLoserUnits.filter(u => !u.type.canRetreat).map(u => u.type.name)
+                    house: this.loser.id,
+                    killedBecauseWounded: immediatelyKilledLoserUnits.filter(u => u.wounded).map(u => u.type.id),
+                    killedBecauseCantRetreat: immediatelyKilledLoserUnits.filter(u => !u.type.canRetreat).map(u => u.type.id)
                 }
             );
 
@@ -185,6 +175,8 @@ export default class PostCombatGameState extends GameState<
         }
 
         const loserArmyLeft = _.difference(loserArmy, immediatelyKilledLoserUnits);
+        const maxLoserCasualtiesCount = Math.max(0, winnerSwordIcons - loserTowerIcons);
+        const loserCasualtiesCount = Math.min(maxLoserCasualtiesCount, loserArmyLeft.length);
 
         if (loserCasualtiesCount > 0) {
             // Check if casualties are prevented this combat
@@ -196,11 +188,26 @@ export default class PostCombatGameState extends GameState<
                     // is not needed. The army left can be exterminated.
                     this.onChooseCasualtiesGameStateEnd(locationLoserArmy, loserArmyLeft);
                 }
-
                 return;
             }
         }
 
+        this.proceedHouseCardHandling();
+    }
+
+    proceedHouseCardHandling(): void {
+        // Put the house cards as used
+        this.combat.houseCombatDatas.forEach(({houseCard}, house) => this.markHouseAsUsed(house, houseCard));
+
+        this.proceedAfterWinnerDetermination();
+    }
+
+    proceedAfterWinnerDetermination(): void {
+        // Do abilities
+        this.setChildGameState(new AfterWinnerDeterminationGameState(this)).firstStart();
+    }
+
+    onAfterWinnerDeterminationFinish(): void {
         this.proceedRetreat();
     }
 
@@ -229,16 +236,16 @@ export default class PostCombatGameState extends GameState<
     }
 
     proceedEndOfCombat(): void {
-        // If the attacker won, move his units to the attacked region
         if (this.winner == this.attacker) {
-            // It might be that this movement can be prevented by house cards (e.g. Arianne Martell)
-            if (!this.isAttackingArmyMovementPrevented()) {
-                this.combat.resolveMarchOrderGameState.moveUnits(this.combat.attackingRegion, this.combat.attackingArmy, this.combat.defendingRegion);
-            } else {
-                // Defender had to retreat
-                // Therefore possible orders in defending region need to be removed
-                this.removeOrderFromRegion(this.combat.defendingRegion);
+            // Check if the attacker still has an army. All attacking units might have
+            // been killed during the combat.
+            if (this.combat.attackingArmy.length > 0) {
+                // It might be that this movement can be prevented by house cards (e.g. Arianne Martell)
+                if (!this.isAttackingArmyMovementPrevented()) {
+                    this.combat.resolveMarchOrderGameState.moveUnits(this.combat.attackingRegion, this.combat.attackingArmy, this.combat.defendingRegion);
+                }
             }
+            this.removeOrderFromRegion(this.combat.defendingRegion);
         }
 
         // Remove the order from attacking region

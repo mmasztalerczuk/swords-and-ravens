@@ -17,21 +17,22 @@ import PlanningGameState from "../common/ingame-game-state/planning-game-state/P
 import PlanningComponent from "./game-state-panel/PlanningComponent";
 import ActionGameState from "../common/ingame-game-state/action-game-state/ActionGameState";
 import ActionComponent from "./game-state-panel/ActionComponent";
-import houseInfluenceImages from "./houseInfluenceImages";
 import * as _ from "lodash";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faStar} from "@fortawesome/free-solid-svg-icons/faStar";
+import {faStickyNote} from "@fortawesome/free-solid-svg-icons/faStickyNote";
 import Tooltip from "react-bootstrap/Tooltip";
-import Badge from "react-bootstrap/Badge";
-import barrelImage from "../../public/images/icons/barrel.svg";
 import castleImage from "../../public/images/icons/castle.svg";
 import stoneThroneImage from "../../public/images/icons/stone-throne.svg";
+import cancelImage from "../../public/images/icons/cancel.svg";
 import ravenImage from "../../public/images/icons/raven.svg";
 import diamondHiltImage from "../../public/images/icons/diamond-hilt.svg";
 import hourglassImage from "../../public/images/icons/hourglass.svg";
 import mammothImage from "../../public/images/icons/mammoth.svg";
 import chatBubble from "../../public/images/icons/chat-bubble.svg";
+import speaker from "../../public/images/icons/speaker.svg";
+import speakerOff from "../../public/images/icons/speaker-off.svg";
 import House from "../common/ingame-game-state/game-data-structure/House";
 import housePowerTokensImages from "./housePowerTokensImages";
 import marked from "marked";
@@ -47,15 +48,26 @@ import Tab from "react-bootstrap/Tab";
 import ChatComponent from "./chat-client/ChatComponent";
 import {HouseCardState} from "../common/ingame-game-state/game-data-structure/house-card/HouseCard";
 import HouseCardBackComponent from "./game-state-panel/utils/HouseCardBackComponent";
+import InfluenceIconComponent from "./game-state-panel/utils/InfluenceIconComponent";
+import SupplyTrackComponent from "./game-state-panel/utils/SupplyTrackComponent";
 import Dropdown from "react-bootstrap/Dropdown";
 import User from "../server/User";
 import Player from "../common/ingame-game-state/Player";
 import {observable} from "mobx";
 import classNames = require("classnames");
-import {Channel} from "./chat-client/ChatClient";
+import {Channel, Message} from "./chat-client/ChatClient";
 // @ts-ignore
 import ScrollToBottom from "react-scroll-to-bottom";
 import GameSettingsComponent from "./GameSettingsComponent";
+import UserLabel from "./UserLabel";
+import VoteComponent from "./VoteComponent";
+import IngameCancelledComponent from "./game-state-panel/IngameCancelledComponent";
+import CancelledGameState from "../common/cancelled-game-state/CancelledGameState";
+import joinReactNodes from "./utils/joinReactNodes";
+import NoteComponent from "./NoteComponent";
+import UnitType from "../common/ingame-game-state/game-data-structure/UnitType";
+import UserSettingsComponent from "./UserSettingsComponent";
+import { GameSettings } from '../common/EntireGame';
 
 interface IngameComponentProps {
     gameClient: GameClient;
@@ -65,10 +77,19 @@ interface IngameComponentProps {
 @observer
 export default class IngameComponent extends Component<IngameComponentProps> {
     mapControls: MapControls = new MapControls();
-    @observable currentOpenedTab = "chat";
+    @observable currentOpenedTab = (this.user && this.user.settings.lastOpenedTab) ? this.user.settings.lastOpenedTab : "chat";
+    @observable height: number | null = null;
 
     get game(): Game {
         return this.props.gameState.game;
+    }
+
+    get gameSettings(): GameSettings {
+        return this.props.gameState.entireGame.gameSettings;
+    }
+
+    get user(): User | null {
+        return this.props.gameClient.authenticatedUser ? this.props.gameClient.authenticatedUser : null;
     }
 
     render(): ReactNode {
@@ -78,44 +99,21 @@ export default class IngameComponent extends Component<IngameComponentProps> {
             {name: "Action", gameState: ActionGameState, component: ActionComponent}
         ];
 
+        const knowsWildlingCard = this.props.gameClient.authenticatedPlayer != null &&
+            this.props.gameClient.authenticatedPlayer.house.knowsNextWildlingCard;
+        const nextWildlingCard = this.game.wildlingDeck.filter(c => c.id == this.game.clientNextWildlingCardId)[0];
+
+        const {result: canLaunchCancelGameVote, reason: canLaunchCancelGameVoteReason} = this.props.gameState.canLaunchCancelGameVote();
+
+        const connectedSpectators = this.getConnectedSpectators();
+
         return (
             <>
-                <Col xs={12} lg={3}>
+                <Col xs={{span: "auto", order: "3"}}  xl={{span: "auto", order: "1"}}>
                     <Row className="stackable">
                         <Col>
                             <Card>
                                 <ListGroup variant="flush">
-                                    <ListGroupItem>
-                                        <Row className="justify-content-between" style={{fontSize: "24px"}}>
-                                            <Col xs="auto">
-                                                <OverlayTrigger overlay={
-                                                        <Tooltip id="turn">
-                                                            <b>Turn</b>
-                                                        </Tooltip>
-                                                    }
-                                                    placement="bottom">
-                                                    <div>
-                                                        <img src={hourglassImage} style={{marginRight: "5px"}} width={32}/>
-                                                        {this.game.turn}
-                                                    </div>
-                                                </OverlayTrigger>
-                                            </Col>
-                                            <Col xs="auto">
-                                                <OverlayTrigger overlay={
-                                                        <Tooltip id="wildling-strength">
-                                                            <b>Wildling Strength</b>
-                                                        </Tooltip>
-                                                    }
-                                                    placement="bottom"
-                                                >
-                                                    <div>
-                                                        {this.game.wildlingStrength}
-                                                        <img src={mammothImage} width={32} style={{marginLeft: "5px"}}/>
-                                                    </div>
-                                                </OverlayTrigger>
-                                            </Col>
-                                        </Row>
-                                    </ListGroupItem>
                                     {this.tracks.map(({tracker, stars}, i) => (
                                         <ListGroupItem key={i}>
                                             <Row className="align-items-center">
@@ -133,12 +131,12 @@ export default class IngameComponent extends Component<IngameComponentProps> {
                                                                 ) : i == 1 ? (
                                                                     <>
                                                                         <b>Fiefdoms Track</b><br />
-                                                                        Once per turn, the holder of Valyrian Steel Blade can use the blade
+                                                                        Once per round, the holder of Valyrian Steel Blade can use the blade
                                                                         to increase by one the combat strength of his army in a combat.<br />
                                                                         In case of a tie in a combat, the winner is the house which is
                                                                         the highest in this tracker.<br/><br/>
                                                                         {this.props.gameState.game.valyrianSteelBladeUsed ? (
-                                                                            <>The Valyrian Steel Blade has been used this turn</>
+                                                                            <>The Valyrian Steel Blade has been used this round</>
                                                                         ) : (
                                                                             <>The Valyrian Steel Blade is available</>
                                                                         )}
@@ -147,8 +145,8 @@ export default class IngameComponent extends Component<IngameComponentProps> {
                                                                     <>
                                                                         <b>Kings&apos;s Court Track</b><br />
                                                                         At the end of the Planning Phase, the holder of the Raven may choose
-                                                                        to either change one of his placed order, or to see the top card of the
-                                                                        wildling deck and decide whether to leave it at the top or to
+                                                                        to either change one of his placed order, or to look at the top card of the
+                                                                        Wildling deck and decide whether to leave it at the top or to
                                                                         place it at the bottom of the deck.
                                                                     </>
                                                                 )}
@@ -161,9 +159,9 @@ export default class IngameComponent extends Component<IngameComponentProps> {
                                                 </Col>
                                                 {tracker.map((h, i) => (
                                                     <Col xs="auto" key={h.id}>
-                                                        <div className="influence-icon hover-weak-outline"
-                                                             style={{backgroundImage: `url(${houseInfluenceImages.get(h.id)})`}}>
-                                                        </div>
+                                                        <InfluenceIconComponent
+                                                            house={h}
+                                                        />
                                                         <div className="tracker-star-container">
                                                             {stars && i < this.game.starredOrderRestrictions.length && (
                                                                 _.range(0, this.game.starredOrderRestrictions[i]).map(i => (
@@ -181,62 +179,16 @@ export default class IngameComponent extends Component<IngameComponentProps> {
                                         </ListGroupItem>
                                     ))}
                                     <ListGroupItem>
-                                        <Row>
-                                            <Col xs="auto">
-                                                <img width="32px" src={barrelImage} alt="Supply"/>
-                                            </Col>
-                                            <Col>
-                                                <Row className="justify-content-center">
-                                                    {this.game.supplyRestrictions.map((allowedArmies, i) => (
-                                                        <Col xs="auto" key={i} className="d-flex flex-column align-items-center">
-                                                            <div>
-                                                            <Badge variant="secondary" style={{fontSize: "14px"}}>
-                                                                {i}
-                                                            </Badge>
-                                                            </div>
-                                                            <div className="d-flex">
-                                                                <div style={{width: "18px", marginRight: "10px", marginTop: "10px"}}>
-                                                                    {this.getHousesAtSupplyLevel(i).map(h => (
-                                                                        <OverlayTrigger
-                                                                            key={h.id}
-                                                                            overlay={
-                                                                                <Tooltip id={`supply-house-${h.id}`}>
-                                                                                    {h.name}
-                                                                                </Tooltip>
-                                                                            }
-                                                                            placement="right">
-                                                                            <div
-                                                                                key={h.id}
-                                                                                className="supply-icon hover-weak-outline"
-                                                                                style={{
-                                                                                    backgroundImage: `url(${houseInfluenceImages.get(h.id)})`,
-                                                                                    marginTop: "-5px"
-                                                                                }}
-                                                                            >
-
-                                                                            </div>
-                                                                        </OverlayTrigger>
-                                                                    ))}
-                                                                </div>
-                                                                <div>
-                                                                    {allowedArmies.map((size, i) => (
-                                                                        <div style={{marginBottom: "-6px"}} key={i}>
-                                                                            {size}
-                                                                        </div>
-                                                                    ))}
-                                                                </div>
-                                                            </div>
-                                                        </Col>
-                                                    ))}
-                                                </Row>
-                                            </Col>
-                                        </Row>
+                                        <SupplyTrackComponent
+                                            supplyRestrictions={this.game.supplyRestrictions}
+                                            houses={this.game.houses}
+                                        />
                                     </ListGroupItem>
                                 </ListGroup>
                             </Card>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row className="stackable">
                         <Col>
                             <Card>
                                 <ListGroup variant="flush">
@@ -253,9 +205,11 @@ export default class IngameComponent extends Component<IngameComponentProps> {
                                                 <Col>
                                                     <b style={{"color": p.house.color}}>{p.house.name}</b>
                                                     {" "}
-                                                    <a href={`/user/${p.user.id}`} target="_blank" rel="noopener noreferrer">
-                                                        <small>{p.user.name}</small>
-                                                    </a>
+                                                    <UserLabel
+                                                        user={p.user}
+                                                        gameState={this.props.gameState}
+                                                        gameClient={this.props.gameClient}
+                                                    />
                                                 </Col>
                                                 <Col xs="auto">
                                                     <Row className="justify-content-center align-items-center" style={{width: 110}}>
@@ -266,33 +220,50 @@ export default class IngameComponent extends Component<IngameComponentProps> {
                                                                         {this.game.getAvailableUnitsOfType(p.house, type)}
                                                                     </Col>
                                                                     <Col xs="auto" style={{marginLeft: 4}}>
-                                                                        <div className="unit-icon small hover-weak-outline"
-                                                                             style={{
-                                                                                 backgroundImage: `url(${unitImages.get(p.house.id).get(type.id)})`,
-                                                                             }}
-                                                                        />
+                                                                        <OverlayTrigger
+                                                                            overlay={this.renderUnitTypeTooltip(type)}
+                                                                            delay={{ show: 250, hide: 100 }}
+                                                                            placement="auto">
+                                                                            <div className="unit-icon small hover-weak-outline"
+                                                                                    style={{
+                                                                                        backgroundImage: `url(${unitImages.get(p.house.id).get(type.id)})`,
+                                                                                    }}
+                                                                            />
+                                                                        </OverlayTrigger>
                                                                     </Col>
                                                                 </Row>
                                                             </Col>
                                                         ))}
                                                     </Row>
                                                 </Col>
-                                                <Col xs="auto" className="d-flex align-items-center">
-                                                    <div style={{fontSize: "18px"}}>{this.game.getTotalHeldStructures(p.house)}</div>
-                                                    <img
-                                                        src={castleImage} width={32} className="hover-weak-outline"
-                                                        style={{marginLeft: "10px"}}
-                                                    />
-                                                </Col>
+                                                <OverlayTrigger
+                                                    overlay={this.renderTotalLandRegionsTooltip(p.house)}
+                                                    delay={{ show: 250, hide: 100 }}
+                                                    placement="auto"
+                                                >
+                                                    <Col xs="auto" className="d-flex align-items-center">
+                                                        <div style={{ fontSize: "18px" }}>{this.game.getTotalHeldStructures(p.house)}</div>
+                                                        <img
+                                                            src={castleImage} width={32} className="hover-weak-outline"
+                                                            style={{ marginLeft: "10px" }}
+                                                        />
+                                                    </Col>
+                                                </OverlayTrigger>
                                                 <Col xs="auto" className="d-flex align-items-center">
                                                     <div style={{fontSize: "18px"}}>{p.house.powerTokens}</div>
-                                                    <div
-                                                        className="house-power-token hover-weak-outline"
-                                                        style={{
-                                                            backgroundImage: `url(${housePowerTokensImages.get(p.house.id)})`,
-                                                            marginLeft: "10px"
-                                                        }}
-                                                    />
+                                                    <OverlayTrigger
+                                                        overlay={this.renderPowerTooltip(p.house)}
+                                                        delay={{show: 250, hide: 100}}
+                                                        placement="auto"
+                                                    >
+                                                        <div
+                                                            className="house-power-token hover-weak-outline"
+                                                            style={{
+                                                                backgroundImage: `url(${housePowerTokensImages.get(p.house.id)})`,
+                                                                marginLeft: "10px"
+                                                            }}
+                                                        />
+                                                    </OverlayTrigger>
                                                 </Col>
                                             </Row>
                                             <Row className="justify-content-center">
@@ -315,13 +286,56 @@ export default class IngameComponent extends Component<IngameComponentProps> {
                                             </Row>
                                         </ListGroupItem>
                                     ))}
+                                    <ListGroupItem className="text-center font-italic">
+                                        <small>
+                                        {connectedSpectators.length > 0 ? (
+                                            <>Spectators: {joinReactNodes(this.getConnectedSpectators().map(u => <strong key={u.id}>{u.name}</strong>), ", ")}</>
+                                        ) : (
+                                            <>No spectators</>
+                                        )}
+                                        </small>
+                                    </ListGroupItem>
                                 </ListGroup>
                             </Card>
                         </Col>
                     </Row>
+                    <Row>
+                        <Col xs="auto">
+                            <button className="btn btn-outline-light btn-sm" onClick={() => this.props.gameClient.muted = !this.props.gameClient.muted}>
+                                <img src={this.props.gameClient.muted ? speakerOff : speaker} width={32}/>
+                            </button>
+                        </Col>
+                        {this.props.gameState.players.has(this.props.gameClient.authenticatedUser as User) && (
+                            <Col xs="auto">
+                                <OverlayTrigger
+                                    overlay={
+                                        <Tooltip id="cancel-game-vote-tooltip">
+                                            {canLaunchCancelGameVote ? (
+                                                "Launch a vote to cancel the game"
+                                            ) : canLaunchCancelGameVoteReason == "already-existing" ? (
+                                                "A vote to cancel the game is already ongoing"
+                                            ) : canLaunchCancelGameVoteReason == "already-cancelled" ? (
+                                                "Game has already been cancelled"
+                                            ) : canLaunchCancelGameVoteReason == "already-ended" && (
+                                                "Game has already ended"
+                                            )}
+                                        </Tooltip>
+                                    }
+                                >
+                                    <button
+                                        className="btn btn-outline-light btn-sm"
+                                        onClick={() => this.props.gameState.launchCancelGameVote()}
+                                        disabled={!canLaunchCancelGameVote}
+                                    >
+                                        <img src={cancelImage} width={32}/>
+                                    </button>
+                                </OverlayTrigger>
+                            </Col>
+                        )}
+                    </Row>
                 </Col>
-                <Col xs="auto">
-                    <div>
+                <Col xs={{span: "auto", order: "2"}} xl={{span: "auto", order: "2"}}>
+                    <div style={{height: this.height != null ? this.height - 90 : "auto", overflowY: this.height != null ? "scroll" : "visible", maxHeight: 1378, minHeight: 460}}>
                         <MapComponent
                             gameClient={this.props.gameClient}
                             ingameGameState={this.props.gameState}
@@ -329,67 +343,134 @@ export default class IngameComponent extends Component<IngameComponentProps> {
                         />
                     </div>
                 </Col>
-                <Col xs={12} lg={3}>
-                    <Row className="stackable">
-                        <Col>
-                            <Card>
-                                <ListGroup variant="flush">
-                                    {phases.some(phase => this.props.gameState.childGameState instanceof phase.gameState) && (
-                                        <ListGroupItem>
-                                            <Row className="justify-content-between">
-                                                {phases.map((phase, i) => (
-                                                    <Col xs="auto" key={i}>
-                                                        {this.props.gameState.childGameState instanceof phase.gameState ? (
-                                                            <strong className="weak-outline">{phase.name} phase</strong>
-                                                        ) : (
-                                                            <span className="text-muted">
-                                                            {phase.name} phase
-                                                        </span>
-                                                        )}
-
-                                                    </Col>
-                                                ))}
-                                            </Row>
-                                        </ListGroupItem>
-                                    )}
-                                    {renderChildGameState(
-                                        {mapControls: this.mapControls, ...this.props},
-                                        _.concat(
-                                            phases.map(phase => [phase.gameState, phase.component] as [any, typeof Component]),
-                                            [[GameEndedGameState, GameEndedComponent]]
-                                        )
-                                    )}
-                                </ListGroup>
-                            </Card>
+                <Col xs={{span: "8", order: "1"}} xl={{span: 3, order: "3"}}>
+                    <Row className="mt-0 mb-0">
+                        <Col xs={{span: "12", order: "2"}} xl={{span: "12", order: "1"}}>
+                            <Row>
+                                <Col>
+                                    <Card border={this.props.gameClient.isOwnTurn() ? "warning" : undefined} bg={this.props.gameState.childGameState instanceof CancelledGameState ? "danger" : undefined}>
+                                        <ListGroup variant="flush">
+                                            {phases.some(phase => this.props.gameState.childGameState instanceof phase.gameState) && (
+                                                <ListGroupItem>
+                                                    <OverlayTrigger
+                                                        overlay={this.renderRemainingWesterosCards()}
+                                                        delay={{ show: 250, hide: 100 }}
+                                                        placement="bottom"
+                                                        popperConfig={{modifiers: {preventOverflow: {boundariesElement: "viewport"}}}}
+                                                    >
+                                                        <Row className="justify-content-between">
+                                                            {phases.map((phase, i) => (
+                                                                <Col xs="auto" key={i}>
+                                                                    {this.props.gameState.childGameState instanceof phase.gameState ? (
+                                                                        <strong className="weak-outline">{phase.name} phase</strong>
+                                                                    ) : (
+                                                                            <span className="text-muted">
+                                                                                {phase.name} phase
+                                                                            </span>
+                                                                        )}
+                                                                </Col>
+                                                            ))}
+                                                        </Row>
+                                                    </OverlayTrigger>
+                                                </ListGroupItem>
+                                            )}
+                                            {renderChildGameState(
+                                                {mapControls: this.mapControls, ...this.props},
+                                                _.concat(
+                                                    phases.map(phase => [phase.gameState, phase.component] as [any, typeof Component]),
+                                                    [[GameEndedGameState, GameEndedComponent]],
+                                                    [[CancelledGameState, IngameCancelledComponent]],
+                                                )
+                                            )}
+                                        </ListGroup>
+                                    </Card>
+                                </Col>
+                                <Col xs="auto">
+                                    <Row>
+                                        <OverlayTrigger overlay={
+                                                <Tooltip id="round">
+                                                    <b>Round</b>
+                                                </Tooltip>
+                                            }
+                                            placement="auto">
+                                                <Col>
+                                                    <Row className="mt-0 mb-1 justify-content-center"><img src={hourglassImage} width={28}/></Row>
+                                                    <Row className="mt-0 mb-2 justify-content-center" style={{fontSize: "22px"}}>{this.game.turn}</Row>
+                                                </Col>
+                                        </OverlayTrigger>
+                                    </Row>
+                                    <Row>
+                                        <OverlayTrigger overlay={
+                                                <Tooltip id="wildling-threat">
+                                                    <b>Wildling Threat</b>{ knowsWildlingCard && nextWildlingCard ?
+                                                    <><br/><br/><strong><u>{nextWildlingCard.type.name}</u></strong><br/>
+                                                    <strong>Lowest Bidder:</strong> {nextWildlingCard.type.wildlingVictoryLowestBidderDescription}<br/>
+                                                    <strong>Everyone Else:</strong> {nextWildlingCard.type.wildlingVictoryEverybodyElseDescription}<br/><br/>
+                                                    <strong>Highest Bidder:</strong> {nextWildlingCard.type.nightsWatchDescription}
+                                                    </>
+                                                    : <></>
+                                                    }
+                                                </Tooltip>
+                                            }
+                                            placement="auto"
+                                        >
+                                            <Col>
+                                                <Row className="mt-0 mb-1 justify-content-center"><img src={mammothImage} width={28} className={knowsWildlingCard ? "wildling-highlight" : ""}/></Row>
+                                                <Row className="mt-0 justify-content-center" style={{fontSize: "22px"}}>{this.game.wildlingStrength}</Row>
+                                            </Col>
+                                        </OverlayTrigger>
+                                    </Row>
+                                </Col>
+                            </Row>
                         </Col>
-                    </Row>
-                    <Row>
-                        <Col>
+                        <Col xs={{span: "12", order: "1"}} xl={{span: "12", order: "2"}}>
                             <Card>
-                                <Tab.Container activeKey={this.currentOpenedTab} onSelect={k => this.currentOpenedTab = k}>
+                                <Tab.Container activeKey={this.currentOpenedTab}
+                                    onSelect={k => {
+                                        this.currentOpenedTab = k;
+                                        if (this.user) {
+                                            this.user.settings.lastOpenedTab = k;
+                                            this.user.syncSettings();
+                                        }
+                                    }}>
                                     <Card.Header>
                                         <Nav variant="tabs">
                                             <Nav.Item>
                                                 <Nav.Link eventKey="game-logs">Game Logs</Nav.Link>
                                             </Nav.Item>
                                             <Nav.Item>
-                                                <Nav.Link eventKey="chat" className={classNames({"new-event": this.publicChatRoom.areThereNewMessage})}>
-                                                    Chat
-                                                </Nav.Link>
+                                                <div className={classNames({"new-event": this.publicChatRoom.areThereNewMessage})}>
+                                                    <Nav.Link eventKey="chat">
+                                                        Chat
+                                                    </Nav.Link>
+                                                </div>
                                             </Nav.Item>
-                                            {this.props.gameClient.isOwner() && (
+                                            {this.props.gameClient.authenticatedPlayer && (
                                                 <Nav.Item>
-                                                    <Nav.Link eventKey="settings">
-                                                        Settings
+                                                    <Nav.Link eventKey="note">
+                                                        <OverlayTrigger
+                                                            overlay={<Tooltip id="note">Personal note</Tooltip>}
+                                                            placement="auto"
+                                                        >
+                                                        <FontAwesomeIcon
+                                                            style={{color: "white"}}
+                                                            icon={faStickyNote}/>
+                                                        </OverlayTrigger>
                                                     </Nav.Link>
                                                 </Nav.Item>
                                             )}
+                                            <Nav.Item>
+                                                <Nav.Link eventKey="settings">
+                                                    Settings
+                                                </Nav.Link>
+                                            </Nav.Item>
                                             {this.getPrivateChatRooms().map(({user, roomId}) => (
                                                 <Nav.Item key={roomId}>
-                                                    <Nav.Link eventKey={roomId}
-                                                              className={classNames({"new-event": this.getPrivateChatRoomForPlayer(user).areThereNewMessage})}>
-                                                        {user.name}
-                                                    </Nav.Link>
+                                                    <div className={classNames({"new-event": this.getPrivateChatRoomForPlayer(user).areThereNewMessage})}>
+                                                        <Nav.Link eventKey={roomId}>
+                                                            {user.name}
+                                                        </Nav.Link>
+                                                    </div>
                                                 </Nav.Item>
                                             ))}
                                             <Nav.Item>
@@ -408,19 +489,32 @@ export default class IngameComponent extends Component<IngameComponentProps> {
                                             </Nav.Item>
                                         </Nav>
                                     </Card.Header>
-                                    <Card.Body style={{height: "350px"}}>
+                                    <Card.Body style={{height: "450px"}}>
                                         <Tab.Content className="h-100">
                                             <Tab.Pane eventKey="chat" className="h-100">
                                                 <ChatComponent gameClient={this.props.gameClient}
                                                                entireGame={this.props.gameState.entireGame}
                                                                roomId={this.props.gameState.entireGame.publicChatRoomId}
-                                                               currentlyViewed={this.currentOpenedTab == "chat"}/>
+                                                               currentlyViewed={this.currentOpenedTab == "chat"}
+                                                               injectBetweenMessages={(p, n) => this.injectBetweenMessages(p, n)}/>
                                             </Tab.Pane>
                                             <Tab.Pane eventKey="game-logs" className="h-100">
-                                                <ScrollToBottom className="h-100">
+                                                <ScrollToBottom className="h-100" scrollViewClassName="overflow-x-hidden">
                                                     <GameLogListComponent ingameGameState={this.props.gameState} />
                                                 </ScrollToBottom>
                                             </Tab.Pane>
+                                            <Tab.Pane eventKey="settings">
+                                                <GameSettingsComponent gameClient={this.props.gameClient}
+                                                                    entireGame={this.props.gameState.entireGame} />
+                                                <UserSettingsComponent user={this.props.gameClient.authenticatedUser}
+                                                                        entireGame={this.props.gameState.entireGame}
+                                                                        parent={this} />
+                                            </Tab.Pane>
+                                            {this.props.gameClient.authenticatedPlayer && (
+                                                <Tab.Pane eventKey="note" className="h-100">
+                                                    <NoteComponent gameClient={this.props.gameClient} ingame={this.props.gameState} />
+                                                </Tab.Pane>
+                                            )}
                                             {this.getPrivateChatRooms().map(({roomId}) => (
                                                 <Tab.Pane eventKey={roomId} key={roomId} className="h-100">
                                                     <ChatComponent gameClient={this.props.gameClient}
@@ -429,12 +523,6 @@ export default class IngameComponent extends Component<IngameComponentProps> {
                                                                    currentlyViewed={this.currentOpenedTab == roomId}/>
                                                 </Tab.Pane>
                                             ))}
-                                            {this.props.gameClient.isOwner() && (
-                                                <Tab.Pane eventKey="settings">
-                                                    <GameSettingsComponent gameClient={this.props.gameClient}
-                                                                        entireGame={this.props.gameState.entireGame} />
-                                                </Tab.Pane>
-                                            )}
                                         </Tab.Content>
                                     </Card.Body>
                                 </Tab.Container>
@@ -456,6 +544,79 @@ export default class IngameComponent extends Component<IngameComponentProps> {
 
     get publicChatRoom(): Channel {
         return this.props.gameClient.chatClient.channels.get(this.props.gameState.entireGame.publicChatRoomId);
+    }
+
+    private renderUnitTypeTooltip(unitType: UnitType): ReactNode {
+        return <Tooltip id={unitType.id + "-tooltip"}>
+            <b>{unitType.name}</b><br/>
+            <small>{unitType.description}</small>
+        </Tooltip>;
+    }
+
+    private renderTotalLandRegionsTooltip(house: House): ReactNode {
+        return <Tooltip id={house.id + "-total-land-regions"}>
+            <h5>Total Land Areas</h5><br/><h4 style={{textAlign: "center"}}><b>{this.game.getTotalControlledLandRegions(house)}</b></h4>
+        </Tooltip>;
+    }
+
+    private renderPowerTooltip(house: House): ReactNode {
+        const availablePower =  house.powerTokens;
+        const powerTokensOnBoard = this.game.countPowerTokensOnBoard(house);
+        const powerInPool = this.game.maxPowerTokens - availablePower - powerTokensOnBoard;
+
+        return <Tooltip id={house.id + "-power-tooltip"}>
+            <b>{house.name}</b><br/>
+            <small>Available: </small><b>{availablePower}</b><br/>
+            <small>On the board: </small><b>{powerTokensOnBoard}</b><br/>
+            <small>Power Pool: </small><b>{powerInPool}</b>
+        </Tooltip>;
+    }
+
+    private renderRemainingWesterosCards(): ReactNode {
+        const remainingCards = this.game.remainingWesterosCardTypes;
+        const nextCards = this.game.nextWesterosCardTypes;
+
+        return <Tooltip id="remaining-westeros-cards" className="westeros-tooltip">
+            {this.gameSettings.cokWesterosPhase && (
+                <>
+                    <Row className='mt-0'>
+                        <Col>
+                            <h5 className='text-center'>Next Westeros Cards</h5>
+                        </Col>
+                    </Row>
+                    <Row>
+                        {nextCards.map((_, i) =>
+                            <Col key={"westeros-deck-" + i + "-header"} className='text-center'>Deck {i + 1}</Col>)}
+                    </Row>
+                    <Row>
+                        {nextCards.map((wd, i) =>
+                            <Col key={"westeros-deck-" + i + "-data"}>
+                                {wd.map((wc, j) => <div key={"westeros-deck-" + i + "-" + j + "-data"}><small>{wc.name}</small></div>)}
+                            </Col>)}
+                    </Row>
+                </>
+            )}
+            <Row className='mt-0'>
+                <Col>
+                    <h5 className='text-center'>Remaining Westeros Cards</h5>
+                </Col>
+            </Row>
+            <Row>
+                {remainingCards.map((_, i) =>
+                    <Col key={"westeros-deck-" + i + "-header"} style={{ textAlign: "center" }}>Deck {i + 1}</Col>)}
+            </Row>
+            <Row>
+                {remainingCards.map((rc, i) =>
+                    <Col key={"westeros-deck-" + i + "-data"}>
+                        {rc.entries.map(([wc, count], j) => <div key={"westeros-deck-" + i + "-" + j + "-data"}><small>{wc.name}</small> ({count})</div>)}
+                    </Col>
+                )}
+            </Row>
+        </Tooltip>;
+    }
+
+    getConnectedSpectators(): User[] {
+        return this.props.gameState.getSpectators().filter(u => u.connected);
     }
 
     onNewPrivateChatRoomClick(p: Player): void {
@@ -488,11 +649,31 @@ export default class IngameComponent extends Component<IngameComponentProps> {
         return this.props.gameState.players.values.filter(p => p.user != this.props.gameClient.authenticatedUser);
     }
 
-    getHousesAtSupplyLevel(supplyLevel: number): House[] {
-        return this.game.houses.values.filter(h => h.supplyLevel == supplyLevel);
-    }
-
     compileGameLog(gameLog: string): string {
         return marked(gameLog);
+    }
+
+    injectBetweenMessages(previous: Message | null, next: Message | null): ReactNode {
+        // Take the necessary votes to render, based on the `createdAt` times of
+        // `previous` and `next`.
+        const votesToRender = this.props.gameState.votes.values.filter(v => (previous != null ? previous.createdAt < v.createdAt : true) && (next ? v.createdAt < next.createdAt : true));
+        console.log(votesToRender);
+        return _.sortBy(votesToRender, v => v.createdAt).map(v => (
+            <VoteComponent key={v.id} vote={v} gameClient={this.props.gameClient} ingame={this.props.gameState} />
+        ));
+    }
+
+    adjustMapHeight(): void {
+        this.height = (this.user && this.user.settings.mapScrollbar) ? window.innerHeight : null;
+    }
+
+    componentDidMount(): void {
+        this.adjustMapHeight();
+        window.addEventListener('resize', () => this.adjustMapHeight());
+
+    }
+
+    componentWillUnmount(): void {
+        window.removeEventListener('resize', () => this.adjustMapHeight());
     }
 }
