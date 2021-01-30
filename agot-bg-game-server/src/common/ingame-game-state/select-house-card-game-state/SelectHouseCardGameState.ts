@@ -21,6 +21,7 @@ export default class SelectHouseCardGameState<P extends ParentGameState> extends
     houseCards: HouseCard[];
 
     firstStart(house: House, houseCards: HouseCard[]): void {
+        console.log("Test !!!!");
         this.house = house;
         this.houseCards = houseCards;
 

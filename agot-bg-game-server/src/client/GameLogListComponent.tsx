@@ -481,6 +481,14 @@ export default class GameLogListComponent extends Component<GameLogListComponent
                         {houseCard.name}</strong> from house <strong>{affectedHouse.name}</strong>.
                 </>;
 
+            case "melisandre-used":
+                house = this.game.houses.get(data.house);
+                houseCard = this.game.getHouseCardById(data.houseCard);
+                return <>
+                    <strong>Patchface</strong>: <strong>{house.name}</strong> decided to discard <strong>
+                        {houseCard.name}</strong> from house.
+                </>;
+
             case "doran-used":
                 house = this.game.houses.get(data.house);
                 affectedHouse = this.game.houses.get(data.affectedHouse);

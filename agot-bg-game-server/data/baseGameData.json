@@ -489,10 +489,10 @@
           "combatStrength": 3,
           "ability": "renly-baratheon"
         },
-        "ser-davos-seaworth": {
-          "name": "Ser Davos Seaworth",
+        "melisandre-dwd": {
+          "name": "Melisandre",
           "combatStrength": 2,
-          "ability": "ser-davos-seaworth"
+          "ability": "melisandre"
         },
         "brienne-of-tarth": {
           "name": "Brienne of Tarth",
