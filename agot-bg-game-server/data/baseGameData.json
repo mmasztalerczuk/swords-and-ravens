@@ -573,7 +573,7 @@
         "ship": 6,
         "siege-engine": 2
       },
-      "houseCards": {
+      "oldhouseCards": {
         "euron-crows-eye": {
           "name": "Euron Crow's Eye",
           "combatStrength": 4,
@@ -608,6 +608,43 @@
         "aeron-damphair": {
           "name": "Aeron Damphair",
           "ability": "aeron-damphair"
+        }
+      },      
+      "houseCards": {
+        "euron-crows-eye": {
+          "name": "Euron Crow's Eye",
+          "combatStrength": 4,
+          "swordIcons": 1
+        },
+        "victarion-greyjoy": {
+          "name": "Victarion Greyjoy",
+          "combatStrength": 3,
+          "ability": "victarion-greyjoy"
+        },
+        "balon-greyjoy": {
+          "name": "Balon Greyjoy",
+          "combatStrength": 2,
+          "ability": "balon-greyjoy"
+        },
+        "theon-greyjoy": {
+          "name": "Theon Greyjoy",
+          "combatStrength": 2,
+          "ability": "theon-greyjoy"
+        },
+        "dagmar-cleftjaw": {
+          "name": "Dagmar Cleftjaw",
+          "combatStrength": 1,
+          "swordIcons": 1,
+          "towerIcons": 1
+        },
+        "asha-greyjoy": {
+          "name": "Asha Greyjoy",
+          "combatStrength": 1,
+          "ability": "asha-greyjoy"
+        },
+        "aeron-damphair-dwd": {
+          "name": "Aeron Damphair",
+          "ability": "aeron-damphair-dwd"
         }
       },
       "supplyLevel": 2

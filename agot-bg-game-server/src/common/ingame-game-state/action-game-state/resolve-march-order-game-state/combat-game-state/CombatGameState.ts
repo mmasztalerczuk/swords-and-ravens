@@ -431,11 +431,21 @@ export default class CombatGameState extends GameState<
     }
 
     getFinalCombatStrength(house: House, strength: number): number {
-        return this.getStatOfHouseCard(
-            house,
-            hc => hc.towerIcons,
-            (h, hc, a, ahc) => a.finalCombatStrength(this, hc, ahc, strength)
-        );
+        const affectedHouseCard = this.houseCombatDatas.get(house).houseCard;
+
+        if (affectedHouseCard == null) {
+            return strength;
+        }
+
+        return this.getOrderResolutionHouseCard().reduce((s, h) => {
+            const houseCard = this.houseCombatDatas.get(h).houseCard;
+
+            if (houseCard == null) {
+                return s;
+            }
+
+            return houseCard.ability ? houseCard.ability.finalCombatStrength(this, houseCard, affectedHouseCard, strength) : s;
+        }, strength);
     }
 
     getStatOfHouseCard(

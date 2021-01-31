@@ -7,7 +7,6 @@ export default class RayderHouseCardAbility extends HouseCardAbility {
 
     finalCombatStrength(combat: CombatGameState, houseCard: HouseCard, affectedHouseCard: HouseCard, strength: number) {
         var a = houseCard != affectedHouseCard ? strength : combat.game.wildlingStrength
-        console.log(`${houseCard.name} ${a}`);
         return a;
     }
 }

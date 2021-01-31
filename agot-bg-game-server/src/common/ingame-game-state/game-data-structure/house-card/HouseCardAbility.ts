@@ -72,7 +72,6 @@ export default class HouseCardAbility {
     }
 
     finalCombatStrength(_combat: CombatGameState, _houseCard: HouseCard, _affectedHouseCard: HouseCard, strength: number) {
-        console.log(`basic ${strength}`);
         return strength;
     }
 
