@@ -19,6 +19,9 @@ import MaceTyrellAbilityComponent from "./MaceTyrellAbilityComponent";
 import AeronDamphairDwDAbilityGameState
     from "../../../common/ingame-game-state/action-game-state/resolve-march-order-game-state/combat-game-state/immediately-house-card-abilities-resolution-game-state/aeron-damphair-dwd-ability-game-state/AeronDamphairDwDAbilityGameState";
 import AeronDamphairDwDAbilityComponent from "./AeronDamphairDwDAbilityComponent";
+import QyburnAbilityGameState
+    from "../../../common/ingame-game-state/action-game-state/resolve-march-order-game-state/combat-game-state/immediately-house-card-abilities-resolution-game-state/qyburn-ability-game-state/QyburnAbilityGameState";
+import QyburnAbilityComponent from "./QyburnAbilityComponent";
 
 @observer
 export default class ImmediatelyHouseCardAbilitiesResolutionComponent extends Component<GameStateComponentProps<ImmediatelyHouseCardAbilitiesResolutionGameState>> {
@@ -28,7 +31,8 @@ export default class ImmediatelyHouseCardAbilitiesResolutionComponent extends Co
             [DoranMartellAbilityGameState, DoranMartellAbilityComponent],
             [AeronDamphairAbilityGameState, AeronDamphairAbilityComponent],
             [MaceTyrellAbilityGameState, MaceTyrellAbilityComponent],
-            [AeronDamphairDwDAbilityGameState, AeronDamphairDwDAbilityComponent]
+            [AeronDamphairDwDAbilityGameState, AeronDamphairDwDAbilityComponent],
+            [QyburnAbilityGameState, QyburnAbilityComponent]
         ]);
     }
 }

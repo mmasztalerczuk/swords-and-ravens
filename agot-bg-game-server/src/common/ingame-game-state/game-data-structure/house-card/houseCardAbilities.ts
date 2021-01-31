@@ -32,6 +32,7 @@ import AeronDamphairDwDHouseCardAbility from "./AeronDamphairDwDHouseCardAbility
 import QarlTheMaidAbility from "./QarlTheMaidHouseCardAbility";
 import RodrikTheReaderAbility from "./RodrikTheReaderCardAbility";
 import EuronCrowsEyeDwDAbility from "./EuronCrowsEyeDwDCardAbility";
+import QyburnAbility from "./QyburnAbility";
 
 export const theonGreyjoy = new TheonGreyjoyHouseCardAbility(
     "theon-greyjoy",
@@ -189,6 +190,11 @@ export const euronCrowsEyeDwd = new EuronCrowsEyeDwDAbility(
     "If you win this combat, you may choose the area to which your opponent's retreats."
     + " You must choose a legal area where your opponent loses the fewest units."
 );
+export const qyburn = new QyburnAbility(
+    "qyburn",
+    "If you win this combat, you may choose the area to which your opponent's retreats."
+    + " You must choose a legal area where your opponent loses the fewest units."
+);
 
 const houseCardAbilities = new BetterMap<string, HouseCardAbility>([
     [theonGreyjoy.id, theonGreyjoy],
@@ -223,6 +229,7 @@ const houseCardAbilities = new BetterMap<string, HouseCardAbility>([
     [qarlTheMaid.id, qarlTheMaid],
     [rodrikTheReader.id, rodrikTheReader],
     [euronCrowsEyeDwd.id, euronCrowsEyeDwd],
+    [qyburn.id, qyburn],
 ]);
 
 export default houseCardAbilities;

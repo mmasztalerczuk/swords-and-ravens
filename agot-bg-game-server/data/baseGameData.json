@@ -393,7 +393,7 @@
         "ship": 6,
         "siege-engine": 2
       },
-      "houseCards": {
+      "OldhouseCards": {
         "tywin-lannister": {
           "name": "Tywin Lannister",
           "combatStrength": 4,
@@ -427,6 +427,42 @@
         "cersei-lannister": {
           "name": "Cersei Lannister",
           "ability": "cersei-lannister"
+        }
+      },      
+      "houseCards": {
+        "tywin-lannister": {
+          "name": "Tywin Lannister",
+          "combatStrength": 4,
+          "ability": "tywin-lannister"
+        },
+        "ser-gregor-clegane": {
+          "name": "Ser Gregor Clegane",
+          "combatStrength": 3,
+          "swordIcons": 3
+        },
+        "ser-jaime-lannister": {
+          "name": "Ser Jaime Lannister",
+          "combatStrength": 2,
+          "swordIcons": 1
+        },
+        "the-hound": {
+          "name": "The hound",
+          "combatStrength": 2,
+          "towerIcons": 2
+        },
+        "ser-kevan-lannister": {
+          "name": "Ser Kevan Lannister",
+          "combatStrength": 1,
+          "ability": "ser-kevan-lannister"
+        },
+        "tyrion-lannister": {
+          "name": "Tyrion Lannister",
+          "combatStrength": 1,
+          "ability": "tyrion-lannister"
+        },
+        "qyburn": {
+          "name": "Qyburn",
+          "ability": "qyburn"
         }
       },
       "supplyLevel": 2
