@@ -611,10 +611,10 @@
         }
       },      
       "houseCards": {
-        "euron-crows-eye": {
+        "euron-crows-eye-dwd": {
           "name": "Euron Crow's Eye",
           "combatStrength": 4,
-          "swordIcons": 1
+          "ability": "euron-crows-eye-dwd"
         },
         "victarion-greyjoy": {
           "name": "Victarion Greyjoy",
