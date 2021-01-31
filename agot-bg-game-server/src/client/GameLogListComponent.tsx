@@ -678,6 +678,15 @@ export default class GameLogListComponent extends Component<GameLogListComponent
                     tokens.
                 </>;
             }
+            case "qarl-the-maid-tokens-gained": {
+                const house = this.game.houses.get(data.house);
+                const powerTokensGained = data.powerTokensGained;
+
+                return <>
+                    <b>Qarl the Maid</b>: <b>{house.name}</b> gained {powerTokensGained} Power
+                    tokens.
+                </>;
+            }
             case "renly-baratheon-no-knight-available": {
                 const house = this.game.houses.get(data.house);
 

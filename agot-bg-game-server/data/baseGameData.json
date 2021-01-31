@@ -631,11 +631,10 @@
           "combatStrength": 2,
           "ability": "theon-greyjoy"
         },
-        "dagmar-cleftjaw": {
-          "name": "Dagmar Cleftjaw",
+        "qarl-the-maid": {
+          "name": "Qarl the Maid",
           "combatStrength": 1,
-          "swordIcons": 1,
-          "towerIcons": 1
+          "ability": "qarl-the-maid"
         },
         "asha-greyjoy": {
           "name": "Asha Greyjoy",

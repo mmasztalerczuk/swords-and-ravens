@@ -28,7 +28,7 @@ export type GameLogData = TurnBegin | SupportDeclared | SupportRefused | Attack 
     | SkinchangerScoutNightsWatchVictory | SkinchangerScoutWildlingVictory
     | RattleshirtsRaidersNightsWatchVictory | RattleshirtsRaidersWildlingVictory
     | GameOfThronesPowerTokensGained | ImmediatelyBattleCasualtiesSuffered | BattleCasualtiesSuffered
-    | SupplyAdjusted | PlayerReplaced | UserHouseAssignments | PlayerAction | MelisandreUsed | JonSnowUsed;
+    | SupplyAdjusted | PlayerReplaced | UserHouseAssignments | PlayerAction | MelisandreUsed | JonSnowUsed | QarlTheMaidPowerTokensGained;
 
 export enum PlayerActionType {
     ORDERS_PLACED,
@@ -359,6 +359,12 @@ interface QueenOfThornsOrderRemoved {
 
 interface TywinLannisterPowerTokensGained {
     type: "tywin-lannister-power-tokens-gained";
+    house: string;
+    powerTokensGained: number;
+}
+
+interface QarlTheMaidPowerTokensGained {
+    type: "qarl-the-maid-tokens-gained";
     house: string;
     powerTokensGained: number;
 }
