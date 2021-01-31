@@ -6,9 +6,6 @@ import HouseCard, {HouseCardState} from "./HouseCard";
 
 export default class QarlTheMaidHouseCardAbility extends HouseCardAbility {
     afterWinnerDetermination(afterWinnerDetermination: AfterWinnerDeterminationGameState, house: House, _houseCard: HouseCard): void {
-        console.log("Qaid");
-        console.log(afterWinnerDetermination.postCombatGameState.loser == house);
-        console.log(afterWinnerDetermination.postCombatGameState.attacker == house);
         if (afterWinnerDetermination.postCombatGameState.loser == house && afterWinnerDetermination.postCombatGameState.attacker == house) {
             const powerTokensGained = afterWinnerDetermination.combatGameState.ingameGameState.changePowerTokens(house, 3);
 

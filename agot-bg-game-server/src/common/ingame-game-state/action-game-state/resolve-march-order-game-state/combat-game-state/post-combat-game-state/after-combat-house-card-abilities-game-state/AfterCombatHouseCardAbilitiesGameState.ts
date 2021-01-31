@@ -10,12 +10,13 @@ import {ClientMessage} from "../../../../../../../messages/ClientMessage";
 import PostCombatGameState from "../PostCombatGameState";
 import PatchfaceAbilityGameState, {SerializedPatchfaceAbilityGameState} from "./patchface-ability-game-state/PatchfaceAbilityGameState";
 import MelisandreAbilityGameState, {SerializedMelisandreAbilityGameState} from "./melisandre-ability-game-state/MelisandreAbilityGameState";
+import RodrikTheReaderAbilityGameState, {SerializedRodrikTheReaderAbilityGameState} from "./rodrik-the-reader-ability-game-state/RodrikTheReaderAbilityGameState";
 
 export default class AfterCombatHouseCardAbilitiesGameState extends GameState<
     PostCombatGameState,
     HouseCardResolutionGameState<
         AfterCombatHouseCardAbilitiesGameState,
-        PatchfaceAbilityGameState | MelisandreAbilityGameState
+        PatchfaceAbilityGameState | MelisandreAbilityGameState | RodrikTheReaderAbilityGameState
     >
 >  {
     get postCombatGameState(): PostCombatGameState {
@@ -81,12 +82,14 @@ export default class AfterCombatHouseCardAbilitiesGameState extends GameState<
             case "patchface-ability":
                 return PatchfaceAbilityGameState.deserializeFromServer(houseCardResolution, data);
             case "melisandre-ability":
-                return MelisandreAbilityGameState.deserializeFromServer(houseCardResolution, data);                
+                return MelisandreAbilityGameState.deserializeFromServer(houseCardResolution, data);
+            case "rodrik-the-reader-ability":
+                return RodrikTheReaderAbilityGameState.deserializeFromServer(houseCardResolution, data);                
         }
     }
 }
 
 export interface SerializedAfterCombatHouseCardAbilitiesGameState {
     type: "after-combat-house-card-abilities";
-    childGameState: SerializedHouseCardResolutionGameState<SerializedPatchfaceAbilityGameState | SerializedMelisandreAbilityGameState>;
+    childGameState: SerializedHouseCardResolutionGameState<SerializedPatchfaceAbilityGameState | SerializedMelisandreAbilityGameState | SerializedRodrikTheReaderAbilityGameState>;
 }

@@ -626,10 +626,10 @@
           "combatStrength": 2,
           "ability": "balon-greyjoy"
         },
-        "theon-greyjoy": {
-          "name": "Theon Greyjoy",
+        "rodrik-the-reader": {
+          "name": "Rodrik The Reader",
           "combatStrength": 2,
-          "ability": "theon-greyjoy"
+          "ability": "rodrik-the-reader"
         },
         "qarl-the-maid": {
           "name": "Qarl the Maid",
