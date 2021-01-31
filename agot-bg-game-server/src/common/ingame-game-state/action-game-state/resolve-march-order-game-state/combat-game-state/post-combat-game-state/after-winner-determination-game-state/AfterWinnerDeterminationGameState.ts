@@ -11,12 +11,12 @@ import RenlyBaratheonAbilityGameState, { SerializedRenlyBaratheonAbilityGameStat
 import PostCombatGameState from "../PostCombatGameState";
 import CerseiLannisterAbilityGameState, {SerializedCerseiLannisterAbilityGameState} from "./cersei-lannister-ability-game-state/CerseiLannisterAbilityGameState";
 import JonSnowBaratheonAbilityGameState, {SerializedJonSnowBaratheonAbilityGameState} from "./jon-snow-baratheon-ability-game-state/JonSnowBaratheonAbilityGameState";
-
+import SerIlynPayneAbilityGameState, {SerializedSerIlynPayneAbilityGameState} from "./ser-ilyn-payne-ability-game-state/SerIlynPayneAbilityGameState";
 export default class AfterWinnerDeterminationGameState extends GameState<
     PostCombatGameState,
     HouseCardResolutionGameState<
         AfterWinnerDeterminationGameState,
-        RenlyBaratheonAbilityGameState | CerseiLannisterAbilityGameState | JonSnowBaratheonAbilityGameState
+        RenlyBaratheonAbilityGameState | CerseiLannisterAbilityGameState | JonSnowBaratheonAbilityGameState | SerIlynPayneAbilityGameState
     >>
 {
     get postCombatGameState(): PostCombatGameState {
@@ -84,7 +84,9 @@ export default class AfterWinnerDeterminationGameState extends GameState<
             case "cersei-lannister-ability":
                 return CerseiLannisterAbilityGameState.deserializeFromServer(houseCardResolution, data);
             case "jon-snow-baratheon-ability":
-                return JonSnowBaratheonAbilityGameState.deserializeFromServer(houseCardResolution, data);                
+                return JonSnowBaratheonAbilityGameState.deserializeFromServer(houseCardResolution, data);
+            case "ser-ilyn-payne-ability":
+                return SerIlynPayneAbilityGameState.deserializeFromServer(houseCardResolution, data);
         }
     }
 }
@@ -92,6 +94,6 @@ export default class AfterWinnerDeterminationGameState extends GameState<
 export interface SerializedAfterWinnerDeterminationGameState {
     type: "after-winner-determination";
     childGameState: SerializedHouseCardResolutionGameState<
-        SerializedRenlyBaratheonAbilityGameState | SerializedCerseiLannisterAbilityGameState | SerializedJonSnowBaratheonAbilityGameState
+        SerializedRenlyBaratheonAbilityGameState | SerializedCerseiLannisterAbilityGameState | SerializedJonSnowBaratheonAbilityGameState | SerializedSerIlynPayneAbilityGameState
     >;
 }

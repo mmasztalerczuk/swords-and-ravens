@@ -50,6 +50,8 @@ import qarlTheMaidImage from "../../public/images/house-cards/QarlTheMaid.png";
 import rodrikTheReaderImage from "../../public/images/house-cards/RodrikTheReader.png";
 import euronDwDImage from "../../public/images/house-cards/EuronCrowsEye.png";
 import qyburnImage from "../../public/images/house-cards/Qyburn.png";
+import serAddamMarbrandImage from "../../public/images/house-cards/SerAddamMarbrand.png";
+import serIlynPayneImage from "../../public/images/house-cards/SerIlynPayne.png";
 
 const houseCardImages = new BetterMap([
     ["queen-of-thorns", queenImage],
@@ -104,6 +106,8 @@ const houseCardImages = new BetterMap([
     ["rodrik-the-reader", rodrikTheReaderImage],
     ["euron-crows-eye-dwd", euronDwDImage],
     ["qyburn", qyburnImage],
+    ["ser-addam-marbrand", serAddamMarbrandImage],
+    ["ser-ilyn-payne", serIlynPayneImage],
 ]);
 
 export default houseCardImages;

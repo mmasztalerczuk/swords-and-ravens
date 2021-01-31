@@ -13,14 +13,17 @@ import CerseiLannisterAbilityComponent from "./CerseiLannisterAbilityComponent";
 import JonSnowBaratheonAbilityGameState
     from "../../../common/ingame-game-state/action-game-state/resolve-march-order-game-state/combat-game-state/post-combat-game-state/after-winner-determination-game-state/jon-snow-baratheon-ability-game-state/JonSnowBaratheonAbilityGameState";
 import JonSnowBaratheonAbilityComponent from "./JonSnowBaratheonAbilityComponent";
-
+import SerIlynPayneAbilityGameState
+    from "../../../common/ingame-game-state/action-game-state/resolve-march-order-game-state/combat-game-state/post-combat-game-state/after-winner-determination-game-state/ser-ilyn-payne-ability-game-state/SerIlynPayneAbilityGameState";
+import SerIlynPayneAbilityComponent from "./SerIlynPayneAbilityComponent";
 @observer
 export default class AfterWinnerDeterminationComponent extends Component<GameStateComponentProps<AfterWinnerDeterminationGameState>> {
     render(): ReactNode {
         return renderChildGameState({...this.props, gameState: this.props.gameState.childGameState}, [
             [RenlyBaratheonAbilityGameState, RenlyBaratheonAbilityComponent],
             [CerseiLannisterAbilityGameState, CerseiLannisterAbilityComponent],
-            [JonSnowBaratheonAbilityGameState, JonSnowBaratheonAbilityComponent],            
+            [JonSnowBaratheonAbilityGameState, JonSnowBaratheonAbilityComponent],
+            [SerIlynPayneAbilityGameState, SerIlynPayneAbilityComponent],
         ]);
     }
 }

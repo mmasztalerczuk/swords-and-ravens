@@ -445,20 +445,20 @@
           "combatStrength": 2,
           "swordIcons": 1
         },
-        "the-hound": {
-          "name": "The hound",
+        "ser-ilyn-payne": {
+          "name": "Ser Ilyn Payne",
           "combatStrength": 2,
-          "towerIcons": 2
+          "ability": "ser-ilyn-payne"
         },
         "ser-kevan-lannister": {
           "name": "Ser Kevan Lannister",
           "combatStrength": 1,
           "ability": "ser-kevan-lannister"
         },
-        "tyrion-lannister": {
-          "name": "Tyrion Lannister",
+        "ser-addam-marbrand": {
+          "name": "Ser Addam Marbrand",
           "combatStrength": 1,
-          "ability": "tyrion-lannister"
+          "ability": "ser-addam-marbrand"
         },
         "qyburn": {
           "name": "Qyburn",

@@ -443,7 +443,8 @@ export default class CombatGameState extends GameState<
             if (houseCard == null) {
                 return s;
             }
-
+            console.log("Insiode getFinalCombat");
+            console.log(houseCard.ability ? houseCard.ability.finalCombatStrength(this, houseCard, affectedHouseCard, strength) : s);
             return houseCard.ability ? houseCard.ability.finalCombatStrength(this, houseCard, affectedHouseCard, strength) : s;
         }, strength);
     }

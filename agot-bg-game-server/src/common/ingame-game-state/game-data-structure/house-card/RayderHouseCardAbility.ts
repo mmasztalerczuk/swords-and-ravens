@@ -6,6 +6,7 @@ import CombatGameState from "../../action-game-state/resolve-march-order-game-st
 export default class RayderHouseCardAbility extends HouseCardAbility {
 
     finalCombatStrength(combat: CombatGameState, houseCard: HouseCard, affectedHouseCard: HouseCard, strength: number) {
+        console.log(`Wilding strength ${combat.game.wildlingStrength}`);
         var a = houseCard != affectedHouseCard ? strength : combat.game.wildlingStrength
         return a;
     }
