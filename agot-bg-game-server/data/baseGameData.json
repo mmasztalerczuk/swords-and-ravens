@@ -476,7 +476,7 @@
         "ship": 6,
         "siege-engine": 2
       },
-      "houseCards": {
+      "oldhouse": {
         "eddard-stark": {
           "name": "Eddard Stark",
           "combatStrength": 4,
@@ -510,6 +510,42 @@
         "catelyn-stark": {
           "name": "Catelyn Stark",
           "ability": "catelyn-stark"
+        }
+      },      
+      "houseCards": {
+        "eddard-stark": {
+          "name": "Eddard Stark",
+          "combatStrength": 4,
+          "swordIcons": 2
+        },
+        "ramsay-bolton": {
+          "name": "Ramsay Bolton",
+          "combatStrength": 3,
+          "ability": "ramsay-bolton"
+        },
+        "roose-bolton": {
+          "name": "Roose Bolton",
+          "combatStrength": 2,
+          "ability": "roose-bolton"
+        },
+        "greatjon-umber": {
+          "name": "Greatjon Umber",
+          "combatStrength": 2,
+          "swordIcons": 1
+        },
+        "ser-rodrick-cassel": {
+          "name": "Ser Rodrick Cassel",
+          "combatStrength": 1,
+          "towerIcons": 2
+        },
+        "walder-frey": {
+          "name": "WalderFrey",
+          "combatStrength": 1,
+          "ability": "walder-frey"
+        },
+        "reek": {
+          "name": "Reek",
+          "ability": "reek"
         }
       },
       "supplyLevel": 1

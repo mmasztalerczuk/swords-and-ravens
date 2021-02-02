@@ -4,18 +4,18 @@ import GameStateComponentProps from "../GameStateComponentProps";
 import renderChildGameState from "../../utils/renderChildGameState";
 import React from "react";
 import Col from "react-bootstrap/Col";
-import JonSnowBaratheonAbilityGameState
-    from "../../../common/ingame-game-state/action-game-state/resolve-march-order-game-state/combat-game-state/post-combat-game-state/after-winner-determination-game-state/jon-snow-baratheon-ability-game-state/JonSnowBaratheonAbilityGameState";
+import ReekAbilityGameState
+    from "../../../common/ingame-game-state/action-game-state/resolve-march-order-game-state/combat-game-state/post-combat-game-state/after-winner-determination-game-state/reek-ability-game-state/ReekAbilityGameState";
 import SimpleChoiceGameState from "../../../common/ingame-game-state/simple-choice-game-state/SimpleChoiceGameState";
 import SimpleChoiceComponent from "../SimpleChoiceComponent";
 
 @observer
-export default class JonSnowBaratheonAbilityComponent extends Component<GameStateComponentProps<JonSnowBaratheonAbilityGameState>> {
+export default class ReekAbilityComponent extends Component<GameStateComponentProps<ReekAbilityGameState>> {
     render(): ReactNode {
         return (
             <>
                 <Col xs={12}>
-                    <b>Jon Snow:</b> You may decrease or increase the Wildling track by one space (to a minimum of 0 and a maximum of 10).
+                    <b>Reek</b> XXXX
                 </Col>
                 {renderChildGameState(this.props, [
                     [SimpleChoiceGameState, SimpleChoiceComponent],

@@ -38,6 +38,9 @@ import SerIlynPayneAbility from "./SerIlynPayneAbility";
 import QuentynMartellAbility from "./QuentynMartellAbility";
 import SerGerrisDrinkwaterAbility from "./SerGerrisDrinkwaterAbility";
 import DoranMartellAbility from "./DoranMartellDwDAbility";
+import WalderFreyAbility from "./WalderFreyHouseCardAbility";
+import ReekAbility from "./ReekHouseCardAbility";
+import RamsayBoltonAbility from "./RamsayBoltonHouseCardAbility";
 
 export const theonGreyjoy = new TheonGreyjoyHouseCardAbility(
     "theon-greyjoy",
@@ -225,6 +228,21 @@ export const doranMartellDwD = new DoranMartellAbility(
     "If you win this combat, you may choose the area to which your opponent's retreats."
     + " You must choose a legal area where your opponent loses the fewest units."
 );
+export const walderFrey = new WalderFreyAbility(
+    "walder-frey",
+    "If you win this combat, you may choose the area to which your opponent's retreats."
+    + " You must choose a legal area where your opponent loses the fewest units."
+);
+export const reek = new ReekAbility(
+    "reek",
+    "If you win this combat, you may choose the area to which your opponent's retreats."
+    + " You must choose a legal area where your opponent loses the fewest units."
+);
+export const ramsayBolton = new RamsayBoltonAbility(
+    "ramsay-bolton",
+    "If you win this combat, you may choose the area to which your opponent's retreats."
+    + " You must choose a legal area where your opponent loses the fewest units."
+);
 
 const houseCardAbilities = new BetterMap<string, HouseCardAbility>([
     [theonGreyjoy.id, theonGreyjoy],
@@ -265,6 +283,9 @@ const houseCardAbilities = new BetterMap<string, HouseCardAbility>([
     [quentynMartell.id, quentynMartell],
     [serGerrisDrinkwater.id, serGerrisDrinkwater],
     [doranMartellDwD.id, doranMartellDwD],
+    [reek.id, reek],
+    [walderFrey.id, walderFrey],
+    [ramsayBolton.id, ramsayBolton],
 ]);
 
 export default houseCardAbilities;
