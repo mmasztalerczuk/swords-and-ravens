@@ -731,11 +731,10 @@
         }
       },      
       "houseCards": {
-        "the-red-viper": {
-          "name": "The Red Viper",
+        "doran-martell-dwd": {
+          "name": "Doran Martell",
           "combatStrength": 4,
-          "swordIcons": 2,
-          "towerIcons": 1
+          "ability": "doran-martell-dwd"
         },
         "areo-hotah": {
           "name": "Areo Hotah",
