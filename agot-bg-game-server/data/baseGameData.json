@@ -693,7 +693,7 @@
         "ship": 6,
         "siege-engine": 2
       },
-      "houseCards": {
+      "OldHouseCards": {
         "the-red-viper": {
           "name": "The Red Viper",
           "combatStrength": 4,
@@ -724,6 +724,43 @@
           "name": "Nymeria Sand",
           "combatStrength": 1,
           "ability": "nymeria-sand"
+        },
+        "doran-martell": {
+          "name": "Doran Martell",
+          "ability": "doran-martell"
+        }
+      },      
+      "houseCards": {
+        "the-red-viper": {
+          "name": "The Red Viper",
+          "combatStrength": 4,
+          "swordIcons": 2,
+          "towerIcons": 1
+        },
+        "areo-hotah": {
+          "name": "Areo Hotah",
+          "combatStrength": 3,
+          "towerIcons": 1
+        },
+        "darkstar": {
+          "name": "Darkstar",
+          "combatStrength": 2,
+          "swordIcons": 1
+        },
+        "obara-sand": {
+          "name": "Obara Sand",
+          "combatStrength": 2,
+          "swordIcons": 1
+        },
+        "arianne-martell": {
+          "name": "Arianne Martell",
+          "combatStrength": 1,
+          "ability": "arianne-martell"
+        },
+        "quentyn-martell": {
+          "name": "Quentyn Martell",
+          "combatStrength": 1,
+          "ability": "quentyn-martell"
         },
         "doran-martell": {
           "name": "Doran Martell",
