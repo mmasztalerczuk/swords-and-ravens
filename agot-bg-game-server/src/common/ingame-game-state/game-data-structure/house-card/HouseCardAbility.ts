@@ -71,7 +71,7 @@ export default class HouseCardAbility {
         return null;
     }
 
-    finalCombatStrength(_combat: CombatGameState, _houseCard: HouseCard, _affectedHouseCard: HouseCard, strength: number) {
+    finalCombatStrength(_combat: CombatGameState, _house: House, _houseCard: HouseCard, _affectedHouseCard: HouseCard, strength: number) {
         return strength;
     }
 

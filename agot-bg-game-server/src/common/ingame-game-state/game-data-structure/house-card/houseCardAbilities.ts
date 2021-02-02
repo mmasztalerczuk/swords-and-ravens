@@ -41,6 +41,9 @@ import DoranMartellAbility from "./DoranMartellDwDAbility";
 import WalderFreyAbility from "./WalderFreyHouseCardAbility";
 import ReekAbility from "./ReekHouseCardAbility";
 import RamsayBoltonAbility from "./RamsayBoltonHouseCardAbility";
+import QueenOfThornsDwDAbility from "./QueenOfThornsDwDHouseCardAbility";
+import PaxterRedwyneAbility from "./PaxterRedwyneHouseCardAbility";
+import MargaeryTyrellDwDAbility from "./MargaeryTyrellDwDAbilityHouseCardAbility";
 
 export const theonGreyjoy = new TheonGreyjoyHouseCardAbility(
     "theon-greyjoy",
@@ -243,6 +246,22 @@ export const ramsayBolton = new RamsayBoltonAbility(
     "If you win this combat, you may choose the area to which your opponent's retreats."
     + " You must choose a legal area where your opponent loses the fewest units."
 );
+export const queenOfThornsDwD = new QueenOfThornsDwDAbility(
+    "queen-of-thorns-dwd",
+    "If you win this combat, you may choose the area to which your opponent's retreats."
+    + " You must choose a legal area where your opponent loses the fewest units."
+);
+export const paxterRedwyne = new PaxterRedwyneAbility(
+    "paxter-redwyne",
+    "If you win this combat, you may choose the area to which your opponent's retreats."
+    + " You must choose a legal area where your opponent loses the fewest units."
+);
+export const margaeryTyrellDwD = new MargaeryTyrellDwDAbility(
+    "margaery-tyrell-dwd",
+    "If you win this combat, you may choose the area to which your opponent's retreats."
+    + " You must choose a legal area where your opponent loses the fewest units."
+);
+
 
 const houseCardAbilities = new BetterMap<string, HouseCardAbility>([
     [theonGreyjoy.id, theonGreyjoy],
@@ -286,6 +305,9 @@ const houseCardAbilities = new BetterMap<string, HouseCardAbility>([
     [reek.id, reek],
     [walderFrey.id, walderFrey],
     [ramsayBolton.id, ramsayBolton],
+    [queenOfThornsDwD.id, queenOfThornsDwD],
+    [paxterRedwyne.id, paxterRedwyne],
+    [margaeryTyrellDwD.id, margaeryTyrellDwD],
 ]);
 
 export default houseCardAbilities;

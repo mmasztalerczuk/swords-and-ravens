@@ -4,7 +4,7 @@ import House from "../House";
 import CombatGameState from "../../action-game-state/resolve-march-order-game-state/combat-game-state/CombatGameState";
 
 export default class RayderHouseCardAbility extends HouseCardAbility {
-    finalCombatStrength(combat: CombatGameState, houseCard: HouseCard, affectedHouseCard: HouseCard, strength: number) {
+    finalCombatStrength(combat: CombatGameState, house: House, houseCard: HouseCard, affectedHouseCard: HouseCard, strength: number) {
         return houseCard != affectedHouseCard ? strength : combat.game.wildlingStrength
     }
 }

@@ -813,7 +813,7 @@
         "ship": 6,
         "siege-engine": 2
       },
-      "houseCards": {
+      "OldhouseCards": {
         "mace-tyrell": {
           "name": "Mace Tyrell",
           "combatStrength": 4,
@@ -847,6 +847,42 @@
         "queen-of-thorns": {
           "name": "Queen of Thorns",
           "ability": "queen-of-thorns"
+        }
+      },
+      "houseCards": {
+        "mace-tyrell": {
+          "name": "Mace Tyrell",
+          "combatStrength": 4,
+          "ability": "mace-tyrell"
+        },
+        "ser-loras-tyrell": {
+          "name": "Ser Loras Tyrell",
+          "combatStrength": 3,
+          "ability": "ser-loras-tyrell"
+        },
+        "randyll-tarly": {
+          "name": "Randyll Tarly",
+          "combatStrength": 2,
+          "swordIcons": 1
+        },
+        "ser-garlan-tyrell": {
+          "name": "Ser Garlan Tyrell",
+          "combatStrength": 2,
+          "swordIcons": 2
+        },
+        "queen-of-thorns-dwd": {
+          "name": "Queen of Thorns",
+          "combatStrength": 1,          
+          "ability": "queen-of-thorns-dwd"
+        },
+        "paxter-redwyne": {
+          "name": "Paxter Redwyne",
+          "combatStrength": 1,
+          "ability": "paxter-redwyne"
+        },
+        "margaery-tyrell-dwd": {
+          "name": "Margaery Tyrell",
+          "ability": "margaery-tyrell-dwd"
         }
       },
       "supplyLevel": 2

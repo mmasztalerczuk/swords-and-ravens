@@ -58,6 +58,9 @@ import doranMartellImage from "../../public/images/house-cards/DoranMartell.png"
 import walderFreyImage from "../../public/images/house-cards/WalderFrey.png";
 import reekImage from "../../public/images/house-cards/Reek.png";
 import ramsayBoltonImage from "../../public/images/house-cards/RamsayBolton.png";
+import queenOfThornsDwDImage from "../../public/images/house-cards/QueenOfThorns.png";
+import paxterRedwyneImage from "../../public/images/house-cards/PaxterRedwyne.png";
+import margaeryTyrellDwDImage from "../../public/images/house-cards/MargaeryTyrell.png";
 
 const houseCardImages = new BetterMap([
     ["queen-of-thorns", queenImage],
@@ -120,6 +123,9 @@ const houseCardImages = new BetterMap([
     ["walder-frey", walderFreyImage],
     ["reek", reekImage],
     ["ramsay-bolton", ramsayBoltonImage],
+    ["queen-of-thorns-dwd", queenOfThornsDwDImage],
+    ["paxter-redwyne", paxterRedwyneImage],
+    ["margaery-tyrell-dwd", margaeryTyrellDwDImage],
 ]);
 
 export default houseCardImages;

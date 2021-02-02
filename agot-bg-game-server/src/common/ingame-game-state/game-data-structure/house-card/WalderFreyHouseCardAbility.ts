@@ -38,6 +38,6 @@ export default class WalderFreyHouseCardAbility extends HouseCardAbility {
         })
         .reduce(_.add, 0);
 
-        return _houseCard == _affectedHouseCard ? supported_val : -supported_val;
+        return _houseCard == _affectedHouseCard ? strength+supported_val : strength-supported_val;
     }
 }
