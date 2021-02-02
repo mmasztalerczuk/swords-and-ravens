@@ -752,10 +752,10 @@
           "combatStrength": 2,
           "swordIcons": 1
         },
-        "arianne-martell": {
-          "name": "Arianne Martell",
+        "ser-gerris-drinkwater": {
+          "name": "Ser Gerris Drinkwater",
           "combatStrength": 1,
-          "ability": "arianne-martell"
+          "ability": "ser-gerris-drinkwater"
         },
         "quentyn-martell": {
           "name": "Quentyn Martell",

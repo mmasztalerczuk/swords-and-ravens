@@ -16,6 +16,9 @@ import JonSnowBaratheonAbilityComponent from "./JonSnowBaratheonAbilityComponent
 import SerIlynPayneAbilityGameState
     from "../../../common/ingame-game-state/action-game-state/resolve-march-order-game-state/combat-game-state/post-combat-game-state/after-winner-determination-game-state/ser-ilyn-payne-ability-game-state/SerIlynPayneAbilityGameState";
 import SerIlynPayneAbilityComponent from "./SerIlynPayneAbilityComponent";
+import SerGerrisDrinkwaterAbilityGameState
+    from "../../../common/ingame-game-state/action-game-state/resolve-march-order-game-state/combat-game-state/post-combat-game-state/after-winner-determination-game-state/ser-gerris-drinkwater-ability-game-state/SerGerrisDrinkwaterAbilityGameState";
+import SerGerrisDrinkwaterAbilityComponent from "./SerGerrisDrinkwaterAbilityComponent";
 @observer
 export default class AfterWinnerDeterminationComponent extends Component<GameStateComponentProps<AfterWinnerDeterminationGameState>> {
     render(): ReactNode {
@@ -24,6 +27,7 @@ export default class AfterWinnerDeterminationComponent extends Component<GameSta
             [CerseiLannisterAbilityGameState, CerseiLannisterAbilityComponent],
             [JonSnowBaratheonAbilityGameState, JonSnowBaratheonAbilityComponent],
             [SerIlynPayneAbilityGameState, SerIlynPayneAbilityComponent],
+            [SerGerrisDrinkwaterAbilityGameState, SerGerrisDrinkwaterAbilityComponent],            
         ]);
     }
 }
