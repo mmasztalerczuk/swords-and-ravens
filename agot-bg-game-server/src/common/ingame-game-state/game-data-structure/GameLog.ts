@@ -28,7 +28,7 @@ export type GameLogData = TurnBegin | SupportDeclared | SupportRefused | Attack 
     | SkinchangerScoutNightsWatchVictory | SkinchangerScoutWildlingVictory
     | RattleshirtsRaidersNightsWatchVictory | RattleshirtsRaidersWildlingVictory
     | GameOfThronesPowerTokensGained | ImmediatelyBattleCasualtiesSuffered | BattleCasualtiesSuffered
-    | SupplyAdjusted | PlayerReplaced | UserHouseAssignments | PlayerAction | MelisandreUsed | JonSnowUsed | QarlTheMaidPowerTokensGained;
+    | SupplyAdjusted | PlayerReplaced | UserHouseAssignments | PlayerAction | MelisandreUsed | JonSnowUsed | QarlTheMaidPowerTokensGained | AeronDamhairUsed;
 
 export enum PlayerActionType {
     ORDERS_PLACED,
@@ -307,6 +307,12 @@ interface DoranUsed {
     house: string;
     affectedHouse: string;
     influenceTrack: number;
+}
+
+interface AeronDamhairUsed {
+    type: "aeron-damphair-used";
+    house: string;
+    tokens: number;
 }
 
 interface TyrionLannisterChoiceMade {

@@ -605,6 +605,15 @@ export default class GameLogListComponent extends Component<GameLogListComponent
                         {affectedHouse.name}</b> to the bottom of the <b>{influenceTrack}</b> track.
                 </>;
             }
+            case "aeron-damphair-used": {
+                const house = this.game.houses.get(data.house);
+                const tokens = data.tokens;
+
+                return <>
+                    <b>Aeron Damphair</b>: <b>{house.name}</b> decided to increase
+                        the combat strength of this card by <b>{tokens}</b>.
+                </>;
+            }            
             case "tyrion-lannister-choice-made": {
                 const house = this.game.houses.get(data.house);
                 const affectedHouse = this.game.houses.get(data.affectedHouse);

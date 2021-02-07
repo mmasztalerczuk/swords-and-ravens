@@ -18,7 +18,7 @@ export default class MelisandreAbilityComponent extends Component<GameStateCompo
         return (
             <>
                 <Col xs={12}>
-                    <b>Patchface: </b> Baratheon must choose one house card of the opponent to discard.
+                    <b>Melisandre: </b> Baratheon may return any House card from discard pile (including this card) by discarding a number of available Power tokens equal to the printed combat strength of that card.
                 </Col>
                 {renderChildGameState(this.props, [
                     [SimpleChoiceGameState, SimpleChoiceComponent],

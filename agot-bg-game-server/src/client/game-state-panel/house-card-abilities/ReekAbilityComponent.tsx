@@ -15,7 +15,7 @@ export default class ReekAbilityComponent extends Component<GameStateComponentPr
         return (
             <>
                 <Col xs={12}>
-                    <b>Reek</b> XXXX
+                    <b>Reek:</b> Stark may return Reek to his hand.
                 </Col>
                 {renderChildGameState(this.props, [
                     [SimpleChoiceGameState, SimpleChoiceComponent],

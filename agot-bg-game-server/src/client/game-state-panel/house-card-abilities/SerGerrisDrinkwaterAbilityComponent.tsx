@@ -4,20 +4,20 @@ import GameStateComponentProps from "../GameStateComponentProps";
 import renderChildGameState from "../../utils/renderChildGameState";
 import React from "react";
 import Col from "react-bootstrap/Col";
-import SerIlynPayneAbilityGameState
-    from "../../../common/ingame-game-state/action-game-state/resolve-march-order-game-state/combat-game-state/post-combat-game-state/after-winner-determination-game-state/ser-ilyn-payne-ability-game-state/SerIlynPayneAbilityGameState";
+import SerGerrisDrinkwaterAbilityGameState
+    from "../../../common/ingame-game-state/action-game-state/resolve-march-order-game-state/combat-game-state/post-combat-game-state/after-winner-determination-game-state/ser-gerris-drinkwater-ability-game-state/SerGerrisDrinkwaterAbilityGameState";
 import SelectUnitsGameState from "../../../common/ingame-game-state/select-units-game-state/SelectUnitsGameState";
 import SelectUnitsComponent from "../SelectUnitsComponent";
 import SimpleChoiceGameState from "../../../common/ingame-game-state/simple-choice-game-state/SimpleChoiceGameState";
 import SimpleChoiceComponent from "../SimpleChoiceComponent";
 
 @observer
-export default class SerIlynPayneAbilityComponent extends Component<GameStateComponentProps< SerIlynPayneAbilityGameState>> {
+export default class SerGerrisDrinkwaterAbilityComponent extends Component<GameStateComponentProps<SerGerrisDrinkwaterAbilityGameState>> {
     render(): ReactNode {
         return (
             <>
                 <Col xs={12}>
-                    <b>Mace Tyrell: </b> Tyrell immediately kills a Footman of the opponent.
+                    <b>Ser Gerris Drinkwater:</b> Martell may move one position higher on one Influence track of his choice.
                 </Col>
                 {renderChildGameState(this.props, [
                     [SimpleChoiceGameState, SimpleChoiceComponent],                    

@@ -18,7 +18,7 @@ export default class RodrikTheReaderAbilityComponent extends Component<GameState
         return (
             <>
                 <Col xs={12}>
-                    <b>Patchface: </b> Baratheon must choose one house card of the opponent to discard.
+                    <b>Rodrik The Reader:</b> Greyjoy may search any Westers deck for a card of his choice and place the chosen card facedown on top of the deck.
                 </Col>
                 {renderChildGameState(this.props, [
                     [SimpleChoiceGameState, SimpleChoiceComponent],

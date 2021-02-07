@@ -17,10 +17,10 @@ export default class SerIlynPayneAbilityComponent extends Component<GameStateCom
         return (
             <>
                 <Col xs={12}>
-                    <b>Mace Tyrell: </b> Tyrell immediately kills a Footman of the opponent.
+                    <b>Ser Ilyn Payne: </b> Lannister may kills a Footman of the opponent.
                 </Col>
                 {renderChildGameState(this.props, [
-                    [SimpleChoiceGameState, SimpleChoiceComponent],                    
+                    [SimpleChoiceGameState, SimpleChoiceComponent],
                     [SelectUnitsGameState, SelectUnitsComponent]
                 ])}
             </>
