@@ -62,6 +62,34 @@ import queenOfThornsDwDImage from "../../public/images/house-cards/QueenOfThorns
 import paxterRedwyneImage from "../../public/images/house-cards/PaxterRedwyne.png";
 import margaeryTyrellDwDImage from "../../public/images/house-cards/MargaeryTyrell.png";
 
+import maceTyrellDwDImage from "../../public/images/house-cards/MaceTyrell.png";
+import randyllTarlyDwDImage from "../../public/images/house-cards/RandyllTarly.png";
+import willasTyrellImage from "../../public/images/house-cards/WillasTyrell.png";
+import serJonFossowayImage from "../../public/images/house-cards/SerJonFossoway.png";
+
+import nymeriaSandDwDImage from "../../public/images/house-cards/NymeriaSand.png";
+import areoHotahDwDImage from "../../public/images/house-cards/AreoHotah.png";
+import bastardOfGodsgraceImage from "../../public/images/house-cards/BastardOfGodsgrace.png";
+import bigManImage from "../../public/images/house-cards/BigMan.png";
+
+import serHarrasHarlawImage from "../../public/images/house-cards/SerHarrasHarlaw.png";
+import victarionGreyjoyDwDImage from "../../public/images/house-cards/VictarionGreyjoy.png";
+import ashaGreyjoyDwDImage from "../../public/images/house-cards/AshaGreyjoy.png";
+
+import bastardOfNightsongImage from "../../public/images/house-cards/BastardOfNightsong.png";
+import serDavosSeaworthDwDImage from "../../public/images/house-cards/SerDavosSeaworth.png";
+import serAxellFlorentImage from "../../public/images/house-cards/SerAxellFlorent.png";
+
+import blackWalderImage from "../../public/images/house-cards/BlackWalder.png";
+import steelshanksWaltonImage from "../../public/images/house-cards/SteelshanksWalton.png";
+import damonDanceForMeImage from "../../public/images/house-cards/DamonDanceForMe.png";
+import rooseBoltonDwDImage from "../../public/images/house-cards/RooseBolton.png";
+
+import cerseiLannisterDwDImage from "../../public/images/house-cards/CerseiLannister.png";
+import serJaimeLannisterDwDImage from "../../public/images/house-cards/SerJaimeLannister.png";
+import serKevanLannisterDwDImage from "../../public/images/house-cards/SerKevanLannister.png";
+import serDavenLannisterImage from "../../public/images/house-cards/DavenLannister.png";
+
 const houseCardImages = new BetterMap([
     ["queen-of-thorns", queenImage],
     ["aeron-damphair", aeronImage],
@@ -126,6 +154,29 @@ const houseCardImages = new BetterMap([
     ["queen-of-thorns-dwd", queenOfThornsDwDImage],
     ["paxter-redwyne", paxterRedwyneImage],
     ["margaery-tyrell-dwd", margaeryTyrellDwDImage],
+    ["mace-tyrell-dwd", maceTyrellDwDImage],
+    ["randyll-tarly-dwd", randyllTarlyDwDImage],
+    ["willas-tyrell", willasTyrellImage],
+    ["ser-jon-fossoway", serJonFossowayImage],
+    ["nymeria-sand-dwd", nymeriaSandDwDImage],
+    ["areo-hotah-dwd", areoHotahDwDImage],
+    ["bastard-of-godsgrace", bastardOfGodsgraceImage],
+    ["big-man", bigManImage],
+    ["ser-harras-harlaw", serHarrasHarlawImage],
+    ["victarion-greyjoy-dwd", victarionGreyjoyDwDImage],
+    ["asha-greyjoy-dwd", ashaGreyjoyDwDImage],
+    ["bastard-of-nightsong", bastardOfNightsongImage],
+    ["ser-davos-seaworth-dwd", serDavosSeaworthDwDImage],
+    ["ser-axell-florent", serAxellFlorentImage],
+    ["black-walder", blackWalderImage],
+    ["steelshanks-walton", steelshanksWaltonImage],
+    ["damon-dance-for-me", damonDanceForMeImage],
+    ["roose-bolton-dwd", rooseBoltonDwDImage],
+    ["cersei-lannister-dwd", cerseiLannisterDwDImage],
+    ["ser-jaime-lannister-dwd", serJaimeLannisterDwDImage],
+    ["ser-kevan-lannister-dwd", serKevanLannisterDwDImage],
+    ["ser-daven-lannister", serDavenLannisterImage],    
 ]);
+
 
 export default houseCardImages;
