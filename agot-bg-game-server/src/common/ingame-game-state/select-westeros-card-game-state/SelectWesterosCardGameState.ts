@@ -23,7 +23,6 @@ export default class SelectWesterosCardGameState<P extends ParentGameState> exte
 
     firstStart(house: House, westerosCards: WesterosCard[], deckId: number): void {
         this.house = house;
-        console.log(westerosCards);
         this.westerosCards = westerosCards;
         this.deckId = deckId;
 
@@ -33,8 +32,6 @@ export default class SelectWesterosCardGameState<P extends ParentGameState> exte
     }
 
     select(westerosCard: WesterosCard): void {
-        console.log("mariusz5555");
-        console.log(westerosCard.id);
         this.parentGameState.entireGame.sendMessageToServer({
             type: "select-westeros-card",
             westerosCardId: westerosCard.id,
@@ -44,7 +41,6 @@ export default class SelectWesterosCardGameState<P extends ParentGameState> exte
 
     onPlayerMessage(player: Player, message: ClientMessage): void {
         if (message.type == "select-westeros-card") {
-            console.log("Response?");
             const westerosCard = this.parentGameState.game.getWesterosCardById(message.westerosCardId, message.deckId);
 
             if (player.house != this.house) {

@@ -42,7 +42,6 @@ export default class RodrikTheReaderAbilityGameState extends GameState<
 
     onSimpleChoiceGameStateEnd(choice: number): void {
         const house = this.childGameState.house;
-        console.log("amriusz");
         if (choice == 0) {
             this.ingame.log({
                 type: "house-card-ability-not-used",
@@ -63,15 +62,9 @@ export default class RodrikTheReaderAbilityGameState extends GameState<
             return;
         }
 
-        console.log("Before shuffle");
-        console.log(this.game.westerosDecks[this.deckId]);
         let westerosCards = this.game.westerosDecks[this.deckId].filter(wc => wc != westerosCard);
-        console.log("filter out");
-        console.log(westerosCards);
         westerosCards = shuffle([...westerosCards]);
         westerosCards.unshift(westerosCard);
-        console.log("After shuffle");
-        console.log(westerosCards);
         this.game.westerosDecks[this.deckId] = westerosCards;
         this.parentGameState.onHouseCardResolutionFinish(house);
     }

@@ -9,15 +9,12 @@ import SerIlynPayneAbilityGameState
 export default class SerIlynPayneAbility extends HouseCardAbility {
 
     afterWinnerDetermination(afterWinnerDetermination: AfterWinnerDeterminationGameState, house: House, _houseCard: HouseCard): void {
-        console.log("Elo");
         if (afterWinnerDetermination.postCombatGameState.winner == house) {
-            console.log("TEST31132123");
             afterWinnerDetermination.childGameState
                 .setChildGameState(new SerIlynPayneAbilityGameState(afterWinnerDetermination.childGameState))
                 .firstStart(house);
             return;
         }
-        console.log("Sad Elo");
         afterWinnerDetermination.childGameState.onHouseCardResolutionFinish(house);
     }
 }

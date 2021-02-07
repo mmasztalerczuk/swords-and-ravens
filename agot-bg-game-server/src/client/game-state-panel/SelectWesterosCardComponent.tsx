@@ -57,8 +57,6 @@ export default class SelectWesterosCardComponent extends Component<GameStateComp
         if (!this.selectedWesterosCard) {
             return;
         }
-        console.log("?!?");
-        console.log(this.selectedWesterosCard);
         this.props.gameState.select(this.selectedWesterosCard);
     }
 }

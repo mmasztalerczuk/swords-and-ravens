@@ -38,11 +38,8 @@ export default class MelisandreAbilityGameState extends GameState<
 
     onSimpleChoiceGameStateEnd(choice: number): void {
         const house = this.childGameState.house;
-        console.log("amriusz");
         if (choice == 0) {
             const choosableHouseCards = house.houseCards.values.filter(hc => hc.state == HouseCardState.USED);
-            console.log(choosableHouseCards);
-            console.log("po wyborze");
             this.setChildGameState(new SelectHouseCardGameState(this)).firstStart(house, choosableHouseCards);
         } else {
             this.ingame.log({
@@ -55,17 +52,12 @@ export default class MelisandreAbilityGameState extends GameState<
     }
 
     onSelectHouseCardFinish(house: House, houseCard: HouseCard | null): void {
-        console.log("karta wyberana 2");
         if (houseCard == null) {
             return;
         }
 
         houseCard.state = HouseCardState.AVAILABLE;
-        console.log("karta wyberana 2");
-        console.log(house.powerTokens);
         house.powerTokens += -houseCard.combatStrength;
-        console.log("po karcie");
-        console.log(house.powerTokens);
         this.ingame.log({
             type: "melisandre-used",
             house: house.id,

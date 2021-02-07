@@ -427,11 +427,7 @@ export default class CombatGameState extends GameState<
             if (houseCard == null) {
                 return s;
             }
-            console.log(house.name);
-            console.log(houseCard == affectedHouseCard);
-            console.log("----------");
             let a = houseCard.ability ? houseCard.ability.modifySupportStrength(this, houseCard, affectedHouseCard, house, supportStrength) : s;
-            console.log(a);
             return a;
         }, supportStrength);
     }
