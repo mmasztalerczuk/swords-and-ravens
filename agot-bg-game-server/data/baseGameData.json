@@ -1,6 +1,7 @@
 {
   "structuresCountNeededToWin": 7,
   "maxTurns": 10,
+  "houseCards": "classic_cards",
   "tracks": {
     "ironThrone": ["baratheon", "lannister", "stark", "martell", "greyjoy", "tyrell"],
     "fiefdoms": ["greyjoy", "tyrell", "martell", "stark", "baratheon", "lannister"],
@@ -393,7 +394,7 @@
         "ship": 6,
         "siege-engine": 2
       },
-      "OldhouseCards": {
+      "classic_cards": {
         "tywin-lannister": {
           "name": "Tywin Lannister",
           "combatStrength": 4,
@@ -429,7 +430,7 @@
           "ability": "cersei-lannister"
         }
       },      
-      "houseCards": {
+      "dwd_houseCards": {
         "ser-jaime-lannister-dwd": {
           "name": "Ser Jaime Lannister",
           "combatStrength": 4,
@@ -477,7 +478,7 @@
         "ship": 6,
         "siege-engine": 2
       },
-      "oldhouse": {
+      "classic_cards": {
         "eddard-stark": {
           "name": "Eddard Stark",
           "combatStrength": 4,
@@ -513,7 +514,7 @@
           "ability": "catelyn-stark"
         }
       },      
-      "houseCards": {
+      "dwd_houseCards": {
         "roose-bolton-dwd": {
           "name": "Roose Bolton",
           "combatStrength": 4,
@@ -560,7 +561,7 @@
         "ship": 6,
         "siege-engine": 2
       },
-      "houseCards": {
+      "dwd_houseCards": {
         "stannis-baratheon-dwd": {
           "name": "Stannis Baratheon",
           "combatStrength": 4,
@@ -598,7 +599,7 @@
         }
       },
 
-      "1houseCards": {
+      "classic_cards": {
         "stannis-baratheon": {
           "name": "Stannis Baratheon",
           "combatStrength": 4,
@@ -646,7 +647,7 @@
         "ship": 6,
         "siege-engine": 2
       },
-      "oldhouseCards": {
+      "classic_cards": {
         "euron-crows-eye": {
           "name": "Euron Crow's Eye",
           "combatStrength": 4,
@@ -683,7 +684,7 @@
           "ability": "aeron-damphair"
         }
       },      
-      "houseCards": {
+      "dwd_houseCards": {
         "euron-crows-eye-dwd": {
           "name": "Euron Crow's Eye",
           "combatStrength": 4,
@@ -731,7 +732,7 @@
         "ship": 6,
         "siege-engine": 2
       },
-      "OldHouseCards": {
+      "classic_cards": {
         "the-red-viper": {
           "name": "The Red Viper",
           "combatStrength": 4,
@@ -768,7 +769,7 @@
           "ability": "doran-martell"
         }
       },      
-      "houseCards": {
+      "dwd_houseCards": {
         "doran-martell-dwd": {
           "name": "Doran Martell",
           "combatStrength": 4,
@@ -816,7 +817,7 @@
         "ship": 6,
         "siege-engine": 2
       },
-      "OldhouseCards": {
+      "classic_cards": {
         "mace-tyrell": {
           "name": "Mace Tyrell",
           "combatStrength": 4,
@@ -852,7 +853,7 @@
           "ability": "queen-of-thorns"
         }
       },
-      "houseCards": {
+      "dwd_houseCards": {
         "mace-tyrell-dwd": {
           "name": "Mace Tyrell",
           "combatStrength": 4,
