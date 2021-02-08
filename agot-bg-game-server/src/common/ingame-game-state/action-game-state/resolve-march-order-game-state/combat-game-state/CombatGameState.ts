@@ -462,7 +462,7 @@ export default class CombatGameState extends GameState<
                 return s;
             }
 
-            return houseCard.ability ? houseCard.ability.finalCombatStrength(this, house, houseCard, affectedHouseCard, strength) : s;
+            return houseCard.ability ? houseCard.ability.finalCombatStrength(this, house, houseCard, affectedHouseCard, s) : s;
         }, strength);
     }
 
@@ -524,8 +524,11 @@ export default class CombatGameState extends GameState<
         + this.getValyrianBladeBonus(house)
         + this.getHouseCardCombatStrength(house)
         + this.getGarrisonCombatStrength(house)
+        console.log(house.name);
+        let fin = this.getFinalCombatStrength(house, total);
+        console.log(fin);
 
-        return this.getFinalCombatStrength(house, total);
+        return fin;
     }
 
     getEnemy(house: House): House {

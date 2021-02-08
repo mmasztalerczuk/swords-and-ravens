@@ -28,7 +28,8 @@ export type GameLogData = TurnBegin | SupportDeclared | SupportRefused | Attack 
     | SkinchangerScoutNightsWatchVictory | SkinchangerScoutWildlingVictory
     | RattleshirtsRaidersNightsWatchVictory | RattleshirtsRaidersWildlingVictory
     | GameOfThronesPowerTokensGained | ImmediatelyBattleCasualtiesSuffered | BattleCasualtiesSuffered
-    | SupplyAdjusted | PlayerReplaced | UserHouseAssignments | PlayerAction | MelisandreUsed | JonSnowUsed | QarlTheMaidPowerTokensGained | AeronDamhairUsed;
+    | SupplyAdjusted | PlayerReplaced | UserHouseAssignments | PlayerAction | MelisandreUsed | JonSnowUsed
+    | QarlTheMaidPowerTokensGained | AeronDamhairUsed | QyburnUsed | MelisandreDwDUsed;
 
 export enum PlayerActionType {
     ORDERS_PLACED,
@@ -296,6 +297,12 @@ interface MelisandreUsed {
     houseCard: string;
 }
 
+interface MelisandreDwDUsed {
+    type: "melisandre-dwd-used";
+    house: string;
+    houseCard: string;
+}
+
 interface JonSnowUsed {
     type: "jon-snow-used";
     house: string;
@@ -307,6 +314,12 @@ interface DoranUsed {
     house: string;
     affectedHouse: string;
     influenceTrack: number;
+}
+
+interface QyburnUsed {
+    type: "qyburn-used";
+    house: string;
+    houseCard: string;
 }
 
 interface AeronDamhairUsed {

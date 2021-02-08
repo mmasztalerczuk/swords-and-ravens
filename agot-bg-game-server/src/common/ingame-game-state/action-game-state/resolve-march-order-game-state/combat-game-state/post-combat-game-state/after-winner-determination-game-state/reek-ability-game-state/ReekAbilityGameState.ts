@@ -57,16 +57,12 @@ export default class ReekAbilityGameState extends GameState<
         } else {
             const reek = house.houseCards.get("reek");
             reek.state = HouseCardState.AVAILABLE;
-            // this.ingame.log({
-            //     type: "jon-snow-used",
-            //     house: house.id,
-            //     wildlingsStrength: choice,
-            // });
-
-            // this.entireGame.broadcastToClients({
-            //     type: "change-wildling-strength",
-            //     wildlingStrength: this.parentGameState.game.wildlingStrength
-            // });
+            this.entireGame.broadcastToClients({
+                type: "change-state-house-card",
+                houseId: house.id,
+                cardIds: [reek.id],
+                state: HouseCardState.AVAILABLE
+            });
 
         }
         this.parentGameState.onHouseCardResolutionFinish(house);

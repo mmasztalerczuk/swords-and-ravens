@@ -59,7 +59,7 @@ export default class MelisandreAbilityGameState extends GameState<
         houseCard.state = HouseCardState.AVAILABLE;
         house.powerTokens += -houseCard.combatStrength;
         this.ingame.log({
-            type: "melisandre-used",
+            type: "melisandre-dwd-used",
             house: house.id,
             houseCard: houseCard.id
         });

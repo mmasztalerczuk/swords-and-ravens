@@ -65,25 +65,24 @@ export default class QyburnAbilityGameState extends GameState<
         // Discard Aeron Damphair, which should normally be the current house card
         // of "house".
         const houseCombatData = this.combatGameState.houseCombatDatas.get(house);
-        const aeronDamphairHouseCard = houseCombatData.houseCard;
+        const qyburnHouseCard = houseCombatData.houseCard;
 
         // This should normally never happen as there's no way for the houseCard of a house to
         // be null if this game state was triggered.
-        if (aeronDamphairHouseCard == null) {
+        if (qyburnHouseCard == null) {
             throw new Error();
         }
 
-        // this.entireGame.broadcastToClients({
-        //     type: "change-state-house-card",
-        //     houseId: house.id,
-        //     cardIds: [aeronDamphairHouseCard.id],
-        //     state: HouseCardState.USED
-        // });
+        this.ingame.log({
+            type: "qyburn-used",
+            house: house.id,
+            houseCard: houseCard.id
+        });
 
         // Mark the new house card as the one used by the house
-        aeronDamphairHouseCard.combatStrength = houseCard.combatStrength;
-        aeronDamphairHouseCard.towerIcons = houseCard.towerIcons;
-        aeronDamphairHouseCard.swordIcons = houseCard.swordIcons;
+        qyburnHouseCard.combatStrength = houseCard.combatStrength;
+        qyburnHouseCard.towerIcons = houseCard.towerIcons;
+        qyburnHouseCard.swordIcons = houseCard.swordIcons;
 
         this.entireGame.broadcastToClients({
             type: "change-combat-house-card",

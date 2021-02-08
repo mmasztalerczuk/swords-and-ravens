@@ -13,6 +13,13 @@ export default class ReekHouseCardAbility extends HouseCardAbility {
         const ramsaybolton = house.houseCards.get("ramsay-bolton");
         ramsaybolton.state = HouseCardState.AVAILABLE;
         immediately.onHouseCardResolutionFinish();
+        immediately.entireGame.broadcastToClients({
+            type: "change-state-house-card",
+            houseId: house.id,
+            cardIds: [ramsaybolton.id],
+            state: HouseCardState.AVAILABLE
+        });
+
     }
 
     afterWinnerDetermination(afterWinnerDetermination: AfterWinnerDeterminationGameState, house: House, _houseCard: HouseCard): void {

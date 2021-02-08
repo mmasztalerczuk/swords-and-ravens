@@ -584,6 +584,14 @@ export default class GameLogListComponent extends Component<GameLogListComponent
                         {houseCard.name}</strong> from house.
                 </>;
             }
+            case "melisandre-dwd-used": {
+                const house = this.game.houses.get(data.house);
+                const houseCard = this.game.getHouseCardById(data.houseCard);
+                return <>
+                    <strong>Melisandre</strong>: <strong>{house.name}</strong> decided to return <strong>
+                        {houseCard.name}</strong> card to hand.
+                </>;
+            }            
             case "jon-snow-used": {
                 const house = this.game.houses.get(data.house);
                 let wilddlingStatus: string = "increase";
@@ -605,6 +613,14 @@ export default class GameLogListComponent extends Component<GameLogListComponent
                         {affectedHouse.name}</b> to the bottom of the <b>{influenceTrack}</b> track.
                 </>;
             }
+            case "qyburn-used": {
+                const house = this.game.houses.get(data.house);
+                const houseCard = this.game.getHouseCardById(data.houseCard);
+
+                return <>
+                    <b>Qyburn</b>: Decided to use strength from <b>{houseCard.name}</b>
+                </>;
+            }            
             case "aeron-damphair-used": {
                 const house = this.game.houses.get(data.house);
                 const tokens = data.tokens;

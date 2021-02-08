@@ -163,103 +163,95 @@ export const robbStark = new RobbStarkHouseCardAbility(
 );
 export const rayder = new RayderHouseCardAbility(
     "rayder",
-    "If you win this combat, you may choose the area to which your opponent's retreats."
-    + " You must choose a legal area where your opponent loses the fewest units."
+    "Your final combat strength is equal to the current position of the Wildling Threat token."
 );
 export const melisandre = new MelisandreHouseCardAbility(
     "melisandre",
-    "If you win this combat, you may choose the area to which your opponent's retreats."
-    + " You must choose a legal area where your opponent loses the fewest units."
+    "After combat, you may return any House card in your discard pile (including this card)"
+    + " to your hand by discarding a number of your available Power tokens equal to the printed combat strength of that card."
 );
 export const jonSnow = new JonSnowBaratheonHouseCardAbility(
     "jon-snow",
-    "If you win this combat, you may choose the area to which your opponent's retreats."
-    + " You must choose a legal area where your opponent loses the fewest units."
+    "If you win this combat, you may decrease of increase the Wildling track by one space"
+    + " (to a minimum of 0 and a maximum of 10)"
 );
 export const stannisBaratheonDwD = new StannisBaratheonDwDHouseCardAbility(
     "stannis-baratheon-dwd",
-    "If you win this combat, you may choose the area to which your opponent's retreats."
-    + " You must choose a legal area where your opponent loses the fewest units."
+    "If you are not being supported in this combat, remove all Support orders (including your own)"
+    + " adjecent to the embattled area, canceling any supporting strength they may have been providing."
 );
 export const aeronDamphairDwD = new AeronDamphairDwDHouseCardAbility(
     "aeron-damphair-dwd",
-    "If you win this combat, you may choose the area to which your opponent's retreats."
-    + " You must choose a legal area where your opponent loses the fewest units."
+    "You may discard any number of your available Power tokens to increase the combat strength"
+    + "  of this card by the number of Power tokens discarded."
 );
 export const qarlTheMaid = new QarlTheMaidAbility(
     "qarl-the-maid",
-    "If you win this combat, you may choose the area to which your opponent's retreats."
-    + " You must choose a legal area where your opponent loses the fewest units."
+    "If you are attacking and lose this combat, gain three Power tokens."
 );
 export const rodrikTheReader = new RodrikTheReaderAbility(
     "rodrik-the-reader",
-    "If you win this combat, you may choose the area to which your opponent's retreats."
-    + " You must choose a legal area where your opponent loses the fewest units."
+    "If you win this combat, you may search any Westeros deck for a card of your choice."
+    + " Shuffle the remaining cards and place the chosen card facedown on top of the deck."
 );
 export const euronCrowsEyeDwd = new EuronCrowsEyeDwDAbility(
     "euron-crows-eye-dwd",
-    "If you win this combat, you may choose the area to which your opponent's retreats."
-    + " You must choose a legal area where your opponent loses the fewest units."
+    "If your opponent has a higher position on the Fiefdoms Influence track than you, this card gains +1 combat strength."
 );
 export const qyburn = new QyburnAbility(
     "qyburn",
-    "If you win this combat, you may choose the area to which your opponent's retreats."
-    + " You must choose a legal area where your opponent loses the fewest units."
+    "You may discard two of your avaiable Power tokens to choose a House card in any players' discard pile."
+    + " Qyburn gains the printed combat, strength and combat icons of that card, ignoring its text ability."
 );
 export const serAddamMarbrand = new SerAddamMarbrandAbility(
     "ser-addam-marbrand",
-    "If you win this combat, you may choose the area to which your opponent's retreats."
-    + " You must choose a legal area where your opponent loses the fewest units."
+    "If you are attacking, all of your participating Knights (including supporting Lannister Knights) add +3"
+    + " combat strength instead of +2."
 );
 export const serIlynPayne = new SerIlynPayneAbility(
     "ser-ilyn-payne",
-    "If you win this combat, you may choose the area to which your opponent's retreats."
-    + " You must choose a legal area where your opponent loses the fewest units."
+    "If you win this combat, you may destroy one of your opponent's Footman in any area (in addition to normal casualties)."
+    + " If that unit is the last unit in its area, remove any Order token there as well."
 );
 export const quentynMartell = new QuentynMartellAbility(
     "quentyn-martell",
-    "If you win this combat, you may choose the area to which your opponent's retreats."
-    + " You must choose a legal area where your opponent loses the fewest units."
+    "For each House card in your discard pile, this card gains +1 combat strength."
 );
 export const serGerrisDrinkwater = new SerGerrisDrinkwaterAbility(
     "ser-gerris-drinkwater",
-    "If you win this combat, you may choose the area to which your opponent's retreats."
-    + " You must choose a legal area where your opponent loses the fewest units."
+    "If you win this combat, you may move one position higher on one Influence track of your choice."
 );
 export const doranMartellDwD = new DoranMartellAbility(
     "doran-martell-dwd",
-    "If you win this combat, you may choose the area to which your opponent's retreats."
-    + " You must choose a legal area where your opponent loses the fewest units."
+    "For each House card in your hand, this card gains a firtificaton icon and a sword icon, and suffers -1 combat"
+    + " strength (to a minimum of 0)."
 );
 export const walderFrey = new WalderFreyAbility(
     "walder-frey",
-    "If you win this combat, you may choose the area to which your opponent's retreats."
-    + " You must choose a legal area where your opponent loses the fewest units."
+    "Any player (other than your opponent) who grants support to your opponent must grant that support to you instead."
 );
 export const reek = new ReekAbility(
     "reek",
-    "If you win this combat, you may choose the area to which your opponent's retreats."
-    + " You must choose a legal area where your opponent loses the fewest units."
+    "If your 'Ramsay Bolton' House card is in your discard pile, immediately return it to your hand."
+    + " If you lose this combat, you may return Reek to your hand)."
 );
 export const ramsayBolton = new RamsayBoltonAbility(
     "ramsay-bolton",
-    "If you win this combat, you may choose the area to which your opponent's retreats."
-    + " You must choose a legal area where your opponent loses the fewest units."
+    "If your 'Reek' House card is still in your hand, this card gains +1 combat strength and three sword icons."
 );
 export const queenOfThornsDwD = new QueenOfThornsDwDAbility(
     "queen-of-thorns-dwd",
-    "If you win this combat, you may choose the area to which your opponent's retreats."
-    + " You must choose a legal area where your opponent loses the fewest units."
+    "Ignore all text abilities printed on your opponent's House card"
 );
 export const paxterRedwyne = new PaxterRedwyneAbility(
     "paxter-redwyne",
-    "If you win this combat, you may choose the area to which your opponent's retreats."
-    + " You must choose a legal area where your opponent loses the fewest units."
+    "If the embattled area is a sea area, all of your paricipating Ships (including supporting Tyrell Ships)"
+    + " add +2 combat strength instead of +1."
 );
 export const margaeryTyrellDwD = new MargaeryTyrellDwDAbility(
     "margaery-tyrell-dwd",
-    "If you win this combat, you may choose the area to which your opponent's retreats."
-    + " You must choose a legal area where your opponent loses the fewest units."
+    "If you are defending your home area or an area that contains one of your Power tokens, "
+    + " your opponents' final combat strength is 2."
 );
 
 
